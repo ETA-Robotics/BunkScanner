@@ -72,6 +72,29 @@
         <button class="map-zoom__btn" id="zoomOut" title="Zoom out">−</button>
       </div>
 
+      <!-- View controls -->
+      <div class="map-controls">
+        <button class="map-control__btn" id="toggleOutlines" title="Toggle pen outlines">
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="2" width="14" height="14" rx="2"/>
+            <path d="M6 8l2 2 4-4"/>
+          </svg>
+        </button>
+        <button class="map-control__btn" id="toggleBackground" title="Toggle background image">
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="12" height="12" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+          </svg>
+        </button>
+        <button class="map-control__btn" id="saveChanges" title="Save changes">
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M15.75 8.25v6a1.5 1.5 0 0 1-1.5 1.5h-9a1.5 1.5 0 0 1-1.5-1.5v-9a1.5 1.5 0 0 1 1.5-1.5h6"/>
+            <path d="M13.5 2.25L15.75 4.5L9 11.25L6 12L6.75 9L13.5 2.25z"/>
+          </svg>
+        </button>
+      </div>
+
       <!-- Legend -->
       <div class="map-legend" id="mapLegend">
         <div class="legend-item"><div class="legend-swatch" style="background:var(--fill-empty)"></div>Empty</div>
@@ -235,6 +258,23 @@
 
     <div class="ctrl-group">
       <button class="ctrl-btn" id="ctrlSettings" title="Threshold settings">&#9881; Thresholds</button>
+      <button class="ctrl-btn" id="ctrlCalibrate" title="Calibrate bunk overlay positions">&#9783; Calibrate</button>
+    </div>
+  </div>
+
+  <!-- ========== CALIBRATION PANEL ========== -->
+  <div class="cal-panel" id="calPanel">
+    <div class="cal-panel__header">
+      <span class="cal-panel__title">Bunk Calibration</span>
+      <button class="cal-panel__close" id="calClose">&#10005;</button>
+    </div>
+    <div class="cal-panel__body">
+      <p class="cal-hint">Drag bunk rows up/down and pen edges left/right on the map, or use the controls below. Arrow keys nudge selected side by 1px.</p>
+      <div id="calSides"></div>
+      <div class="cal-actions">
+        <button class="btn-primary" id="calExport">Copy Layout Code</button>
+        <button class="btn-secondary" id="calReset">Reset</button>
+      </div>
     </div>
   </div>
 

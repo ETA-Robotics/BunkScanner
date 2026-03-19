@@ -13,8 +13,8 @@
   /* ----------------------------------------------------------
      CONFIGURATION
      ---------------------------------------------------------- */
-  const IMG_W = 3309;
-  const IMG_H = 2339;
+  const IMG_W = 2990;
+  const IMG_H = 1290;
   const SEGMENT_LENGTH_M = 2.4;
   const SENSORS_PER_SEG = 4;
   const BUNK_DEPTH_MM = 430; // Internal depth (low side) of WFLBT02
@@ -23,7 +23,7 @@
   /* ----------------------------------------------------------
      LAYOUT COORDINATES
      Pixel positions measured from the feedlot layout image
-     (3309 × 2339 @ 200 DPI).
+     (2990 × 1290).
      Each side has: y (top of bunk row), bunkH (visual height
      of the bunk strip on the map), and an array of pens with
      x start, width, and pen ID.
@@ -32,90 +32,90 @@
     D: {
       label: 'D Side',
       totalLength: 280,
-      y: 600,
-      bunkH: 24,
-      labelPos: { x: 220, y: 595 },
+      y: 425,
+      bunkH: 16,
+      labelPos: { x: 200, y: 415 },
       pens: [
-        { id: 'D8',  x: 330,  w: 170 },
-        { id: 'D7',  x: 510,  w: 170 },
-        { id: 'D6',  x: 690,  w: 168 },
-        { id: 'D5',  x: 868,  w: 168 },
-        { id: 'D4',  x: 1046, w: 168 },
-        { id: 'D3',  x: 1224, w: 168 },
-        { id: 'D2',  x: 1400, w: 168 },
-        { id: 'D1',  x: 1576, w: 162 },
+        { id: 'D8',  x: 295,  w: 184 },
+        { id: 'D7',  x: 479,  w: 131 },
+        { id: 'D6',  x: 610,  w: 130 },
+        { id: 'D5',  x: 740,  w: 133 },
+        { id: 'D4',  x: 873,  w: 134 },
+        { id: 'D3',  x: 1007, w: 129 },
+        { id: 'D2',  x: 1136, w: 133 },
+        { id: 'D1',  x: 1269, w: 133 },
       ]
     },
     C: {
       label: 'C Side',
       totalLength: 515,
-      y: 875,
-      bunkH: 24,
-      labelPos: { x: 220, y: 870 },
+      y: 515,
+      bunkH: 16,
+      labelPos: { x: 200, y: 505 },
       pens: [
-        { id: 'C15', x: 310,  w: 130 },
-        { id: 'C14', x: 448,  w: 130 },
-        { id: 'C13', x: 586,  w: 130 },
-        { id: 'C12', x: 724,  w: 130 },
-        { id: 'C11', x: 862,  w: 130 },
-        { id: 'C10', x: 1000, w: 130 },
-        { id: 'C9',  x: 1138, w: 130 },
-        { id: 'C8',  x: 1276, w: 130 },
-        { id: 'C7',  x: 1414, w: 130 },
-        { id: 'C6',  x: 1552, w: 130 },
-        { id: 'C5',  x: 1690, w: 130 },
-        { id: 'C4',  x: 1828, w: 130 },
-        { id: 'C3',  x: 1966, w: 130 },
-        { id: 'C2',  x: 2104, w: 130 },
-        { id: 'C1',  x: 2242, w: 130 },
+        { id: 'C15', x: 297,  w: 180 },
+        { id: 'C14', x: 477,  w: 133 },
+        { id: 'C13', x: 610,  w: 131 },
+        { id: 'C12', x: 741,  w: 134 },
+        { id: 'C11', x: 875,  w: 130 },
+        { id: 'C10', x: 1005, w: 132 },
+        { id: 'C9',  x: 1137, w: 133 },
+        { id: 'C8',  x: 1270, w: 134 },
+        { id: 'C7',  x: 1404, w: 130 },
+        { id: 'C6',  x: 1534, w: 133 },
+        { id: 'C5',  x: 1667, w: 132 },
+        { id: 'C4',  x: 1799, w: 131 },
+        { id: 'C3',  x: 1930, w: 131 },
+        { id: 'C2',  x: 2061, w: 134 },
+        { id: 'C1',  x: 2195, w: 133 },
       ]
     },
     B: {
       label: 'B Side',
       totalLength: 500,
-      y: 1110,
-      bunkH: 24,
-      labelPos: { x: 220, y: 1105 },
+      y: 990,
+      bunkH: 16,
+      labelPos: { x: 200, y: 980 },
       pens: [
-        { id: 'B20', x: 270,  w: 100 },
-        { id: 'B19', x: 376,  w: 100 },
-        { id: 'B18', x: 482,  w: 100 },
-        { id: 'B17', x: 588,  w: 100 },
-        { id: 'B16', x: 694,  w: 100 },
-        { id: 'B15', x: 800,  w: 100 },
-        { id: 'B14', x: 906,  w: 100 },
-        { id: 'B13', x: 1012, w: 100 },
-        { id: 'B12', x: 1118, w: 92 },
-        { id: 'B11', x: 1216, w: 92 },
-        { id: 'B10', x: 1314, w: 92 },
-        { id: 'B9',  x: 1412, w: 92 },
-        { id: 'B8',  x: 1510, w: 100 },
-        { id: 'B7',  x: 1616, w: 100 },
-        { id: 'B6',  x: 1722, w: 100 },
-        { id: 'B5',  x: 1828, w: 100 },
-        { id: 'B4',  x: 1934, w: 100 },
-        { id: 'B3',  x: 2040, w: 100 },
-        { id: 'B2',  x: 2146, w: 100 },
-        { id: 'B1',  x: 2252, w: 100 },
+        { id: 'B20', x: 368,  w: 100 },
+        { id: 'B19', x: 468,  w: 99 },
+        { id: 'B18', x: 567,  w: 97 },
+        { id: 'B17', x: 664,  w: 100 },
+        { id: 'B16', x: 764,  w: 102 },
+        { id: 'B15', x: 866,  w: 96 },
+        { id: 'B14', x: 962,  w: 95 },
+        { id: 'B13', x: 1057, w: 100 },
+        { id: 'B12', x: 1157, w: 99 },
+        { id: 'B11', x: 1256, w: 98 },
+        { id: 'B10', x: 1354, w: 99 },
+        { id: 'B9',  x: 1453, w: 99 },
+        { id: 'B8',  x: 1552, w: 98 },
+        { id: 'B7',  x: 1650, w: 96 },
+        { id: 'B6',  x: 1746, w: 101 },
+        { id: 'B5',  x: 1847, w: 100 },
+        { id: 'B4',  x: 1947, w: 96 },
+        { id: 'B3',  x: 2043, w: 99 },
+        { id: 'B2',  x: 2142, w: 99 },
+        { id: 'B1',  x: 2241, w: 100 },
       ]
     },
     Z: {
       label: 'Z Side',
       totalLength: 500,
-      y: 1375,
-      bunkH: 24,
-      labelPos: { x: 220, y: 1370 },
+      y: 1050,
+      bunkH: 16,
+      labelPos: { x: 200, y: 1065 },
       pens: [
-        { id: 'Z10', x: 335,  w: 170 },
-        { id: 'Z9',  x: 515,  w: 170 },
-        { id: 'Z8',  x: 695,  w: 170 },
-        { id: 'Z7',  x: 875,  w: 170 },
-        { id: 'Z6',  x: 1055, w: 170 },
-        { id: 'Z5',  x: 1235, w: 170 },
-        { id: 'Z4',  x: 1415, w: 170 },
-        { id: 'Z3',  x: 1595, w: 170 },
-        { id: 'Z2',  x: 1775, w: 170 },
-        { id: 'Z1',  x: 1955, w: 170 },
+        { id: 'Z10', x: 353,  w: 199 },
+        { id: 'Z9',  x: 552,  w: 197 },
+        { id: 'Z8',  x: 749,  w: 197 },
+        { id: 'Z7',  x: 946,  w: 196 },
+        { id: 'Z6',  x: 1142, w: 192 },
+        { id: 'Z5',  x: 1334, w: 196 },
+        { id: 'Z4',  x: 1530, w: 195 },
+        { id: 'Z3',  x: 1725, w: 199 },
+        { id: 'Z2',  x: 1924, w: 202 },
+        { id: 'Z1',  x: 2126, w: 194 },
       ]
     }
   };
@@ -138,6 +138,7 @@
     isPanning: false,
     panStart: { x: 0, y: 0 },
     notes: loadNotes(),
+    viewSettings: loadViewSettings(),
   };
 
   function loadThresholds() {
@@ -162,6 +163,18 @@
 
   function saveNotes() {
     localStorage.setItem('bunkscanner_notes', JSON.stringify(state.notes));
+  }
+
+  function loadViewSettings() {
+    try {
+      const s = localStorage.getItem('bunkscanner_view_settings');
+      if (s) return JSON.parse(s);
+    } catch (_) {}
+    return { penOutlines: false, showBackground: true };
+  }
+
+  function saveViewSettings() {
+    localStorage.setItem('bunkscanner_view_settings', JSON.stringify(state.viewSettings));
   }
 
   /* ----------------------------------------------------------
@@ -446,6 +459,23 @@
         const penGroup = document.createElementNS(svgNS, 'g');
         penGroup.classList.add('pen-group');
         penGroup.dataset.pen = pen.id;
+
+        // Add pen outline if enabled
+        if (state.viewSettings.penOutlines) {
+          const penOutline = document.createElementNS(svgNS, 'rect');
+          penOutline.setAttribute('x', penLayout.x - 2);
+          penOutline.setAttribute('y', sideLayout.y - 2);
+          penOutline.setAttribute('width', penLayout.w + 4);
+          penOutline.setAttribute('height', sideLayout.bunkH + 4);
+          penOutline.setAttribute('rx', 3);
+          penOutline.classList.add('pen-outline');
+          penOutline.style.fill = 'none';
+          penOutline.style.stroke = 'var(--text)';
+          penOutline.style.strokeWidth = '2';
+          penOutline.style.strokeDasharray = '5,3';
+          penOutline.style.opacity = '0.7';
+          penGroup.appendChild(penOutline);
+        }
 
         // Pen label
         const penLabel = document.createElementNS(svgNS, 'text');
@@ -1186,6 +1216,375 @@
   }
 
   /* ----------------------------------------------------------
+     CALIBRATION MODE
+     Drag bunk rows (Y) and pen edges (X) to align overlays
+     on the aerial image, then export the corrected LAYOUT.
+     ---------------------------------------------------------- */
+  let calActive = false;
+  let calDrag = null; // { type: 'sideY'|'penEdge', side, penIdx, startVal, startMouse }
+
+  function toggleCalibration() {
+    calActive = !calActive;
+    const panel = document.getElementById('calPanel');
+    const btn = document.getElementById('ctrlCalibrate');
+    if (calActive) {
+      panel.classList.add('cal-panel--open');
+      btn.classList.add('ctrl-btn--active');
+      buildCalPanel();
+      buildCalHandles();
+    } else {
+      panel.classList.remove('cal-panel--open');
+      btn.classList.remove('ctrl-btn--active');
+      removeCalHandles();
+    }
+  }
+
+  function buildCalPanel() {
+    const container = document.getElementById('calSides');
+    container.innerHTML = '';
+    for (const [sideKey, sideLayout] of Object.entries(LAYOUT)) {
+      const sec = document.createElement('div');
+      sec.className = 'cal-side';
+      sec.dataset.side = sideKey;
+
+      const header = document.createElement('div');
+      header.className = 'cal-side__header';
+      header.innerHTML = `<span>${sideLayout.label}</span><span style="font-size:10px;color:var(--text-muted)">y=${sideLayout.y} h=${sideLayout.bunkH}</span>`;
+      header.addEventListener('click', () => sec.classList.toggle('cal-side--expanded'));
+
+      const body = document.createElement('div');
+      body.className = 'cal-side__body';
+
+      // Y position row
+      body.appendChild(makeCalRow('Y', sideLayout.y, (v) => {
+        sideLayout.y = v;
+        sideLayout.labelPos.y = v - 10;
+        rebuildOverlay();
+        buildCalHandles();
+      }));
+
+      // bunkH row
+      body.appendChild(makeCalRow('Height', sideLayout.bunkH, (v) => {
+        sideLayout.bunkH = v;
+        rebuildOverlay();
+        buildCalHandles();
+      }));
+
+      // Pen list
+      const pensGrid = document.createElement('div');
+      pensGrid.className = 'cal-pens-grid';
+      sideLayout.pens.forEach((pen, i) => {
+        const row = document.createElement('div');
+        row.className = 'cal-pen-row';
+
+        const idSpan = document.createElement('span');
+        idSpan.className = 'cal-pen-row__id';
+        idSpan.textContent = pen.id;
+
+        const xInput = document.createElement('input');
+        xInput.type = 'number';
+        xInput.value = pen.x;
+        xInput.title = 'X position';
+        xInput.addEventListener('change', () => {
+          pen.x = parseInt(xInput.value) || pen.x;
+          rebuildOverlay();
+          buildCalHandles();
+        });
+
+        const wInput = document.createElement('input');
+        wInput.type = 'number';
+        wInput.value = pen.w;
+        wInput.title = 'Width';
+        wInput.addEventListener('change', () => {
+          pen.w = parseInt(wInput.value) || pen.w;
+          rebuildOverlay();
+          buildCalHandles();
+        });
+
+        const xLabel = document.createElement('span');
+        xLabel.textContent = 'x:';
+        xLabel.style.cssText = 'font-size:10px;color:var(--text-muted)';
+        const wLabel = document.createElement('span');
+        wLabel.textContent = 'w:';
+        wLabel.style.cssText = 'font-size:10px;color:var(--text-muted)';
+
+        row.append(idSpan, xLabel, xInput, wLabel, wInput);
+        pensGrid.appendChild(row);
+      });
+      body.appendChild(pensGrid);
+
+      sec.append(header, body);
+      container.appendChild(sec);
+    }
+  }
+
+  function makeCalRow(label, value, onChange) {
+    const row = document.createElement('div');
+    row.className = 'cal-row';
+
+    const lbl = document.createElement('span');
+    lbl.className = 'cal-row__label';
+    lbl.textContent = label;
+
+    const input = document.createElement('input');
+    input.className = 'cal-row__input';
+    input.type = 'number';
+    input.value = value;
+
+    const minus = document.createElement('button');
+    minus.className = 'cal-row__nudge';
+    minus.textContent = '−';
+    const plus = document.createElement('button');
+    plus.className = 'cal-row__nudge';
+    plus.textContent = '+';
+
+    input.addEventListener('change', () => {
+      const v = parseInt(input.value);
+      if (!isNaN(v)) onChange(v);
+    });
+    minus.addEventListener('click', () => {
+      input.value = parseInt(input.value) - 1;
+      onChange(parseInt(input.value));
+    });
+    plus.addEventListener('click', () => {
+      input.value = parseInt(input.value) + 1;
+      onChange(parseInt(input.value));
+    });
+
+    row.append(lbl, minus, input, plus);
+    return row;
+  }
+
+  function buildCalHandles() {
+    removeCalHandles();
+    if (!calActive) return;
+    const svg = document.getElementById('mapSvg');
+
+    for (const [sideKey, sl] of Object.entries(LAYOUT)) {
+      // Full-width drag handle for side Y
+      const handle = document.createElementNS(svgNS, 'rect');
+      handle.classList.add('cal-handle');
+      const firstPen = sl.pens[0];
+      const lastPen = sl.pens[sl.pens.length - 1];
+      const xStart = firstPen.x;
+      const xEnd = lastPen.x + lastPen.w;
+      handle.setAttribute('x', xStart);
+      handle.setAttribute('y', sl.y - 4);
+      handle.setAttribute('width', xEnd - xStart);
+      handle.setAttribute('height', sl.bunkH + 8);
+      handle.dataset.calType = 'sideY';
+      handle.dataset.calSide = sideKey;
+      svg.appendChild(handle);
+
+      // Pen edge handles
+      sl.pens.forEach((pen, i) => {
+        // Left edge
+        const edge = document.createElementNS(svgNS, 'line');
+        edge.classList.add('cal-edge');
+        edge.setAttribute('x1', pen.x);
+        edge.setAttribute('y1', sl.y - 10);
+        edge.setAttribute('x2', pen.x);
+        edge.setAttribute('y2', sl.y + sl.bunkH + 10);
+        edge.dataset.calType = 'penEdge';
+        edge.dataset.calSide = sideKey;
+        edge.dataset.calPen = i;
+        edge.dataset.calEdge = 'left';
+        svg.appendChild(edge);
+      });
+      // Right edge of last pen
+      const rEdge = document.createElementNS(svgNS, 'line');
+      rEdge.classList.add('cal-edge');
+      const lp = sl.pens[sl.pens.length - 1];
+      rEdge.setAttribute('x1', lp.x + lp.w);
+      rEdge.setAttribute('y1', sl.y - 10);
+      rEdge.setAttribute('x2', lp.x + lp.w);
+      rEdge.setAttribute('y2', sl.y + sl.bunkH + 10);
+      rEdge.dataset.calType = 'penEdgeRight';
+      rEdge.dataset.calSide = sideKey;
+      rEdge.dataset.calPen = sl.pens.length - 1;
+      svg.appendChild(rEdge);
+    }
+  }
+
+  function removeCalHandles() {
+    document.querySelectorAll('.cal-handle, .cal-edge').forEach(el => el.remove());
+  }
+
+  function initCalDrag() {
+    const svg = document.getElementById('mapSvg');
+
+    svg.addEventListener('mousedown', (e) => {
+      if (!calActive) return;
+      const el = e.target;
+      const calType = el.dataset.calType;
+      if (!calType) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      const sideKey = el.dataset.calSide;
+      const sl = LAYOUT[sideKey];
+      const svgPt = toSvgCoords(e);
+
+      if (calType === 'sideY') {
+        calDrag = { type: 'sideY', side: sideKey, startY: sl.y, startMouse: svgPt.y };
+      } else if (calType === 'penEdge') {
+        const pi = parseInt(el.dataset.calPen);
+        calDrag = { type: 'penEdge', side: sideKey, penIdx: pi, startX: sl.pens[pi].x, startMouse: svgPt.x };
+      } else if (calType === 'penEdgeRight') {
+        const pi = parseInt(el.dataset.calPen);
+        calDrag = { type: 'penEdgeRight', side: sideKey, penIdx: pi, startW: sl.pens[pi].w, startMouse: svgPt.x };
+      }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!calDrag) return;
+      const svgPt = toSvgCoords(e);
+      const sl = LAYOUT[calDrag.side];
+
+      if (calDrag.type === 'sideY') {
+        const dy = Math.round(svgPt.y - calDrag.startMouse);
+        sl.y = calDrag.startY + dy;
+        sl.labelPos.y = sl.y - 10;
+      } else if (calDrag.type === 'penEdge') {
+        const dx = Math.round(svgPt.x - calDrag.startMouse);
+        const pen = sl.pens[calDrag.penIdx];
+        const newX = calDrag.startX + dx;
+        // Adjust width to keep right edge fixed
+        pen.w = pen.w + (pen.x - newX);
+        pen.x = newX;
+        // Also adjust previous pen's width if exists
+        if (calDrag.penIdx > 0) {
+          const prev = sl.pens[calDrag.penIdx - 1];
+          prev.w = newX - prev.x;
+        }
+      } else if (calDrag.type === 'penEdgeRight') {
+        const dx = Math.round(svgPt.x - calDrag.startMouse);
+        sl.pens[calDrag.penIdx].w = calDrag.startW + dx;
+      }
+
+      rebuildOverlay();
+      buildCalHandles();
+      buildCalPanel();
+    });
+
+    window.addEventListener('mouseup', () => {
+      calDrag = null;
+    });
+  }
+
+  function toSvgCoords(e) {
+    const svg = document.getElementById('mapSvg');
+    const pt = svg.createSVGPoint();
+    pt.x = e.clientX;
+    pt.y = e.clientY;
+    const ctm = svg.getScreenCTM().inverse();
+    return pt.matrixTransform(ctm);
+  }
+
+  function rebuildOverlay() {
+    buildSvgOverlay();
+    updateSegmentColors();
+    applySideFilter();
+    applyDensity();
+  }
+
+  function exportLayoutCode() {
+    let code = 'const LAYOUT = {\n';
+    for (const [sideKey, sl] of Object.entries(LAYOUT)) {
+      code += `    ${sideKey}: {\n`;
+      code += `      label: '${sl.label}',\n`;
+      code += `      totalLength: ${sl.totalLength},\n`;
+      code += `      y: ${sl.y},\n`;
+      code += `      bunkH: ${sl.bunkH},\n`;
+      code += `      labelPos: { x: ${sl.labelPos.x}, y: ${sl.labelPos.y} },\n`;
+      code += `      pens: [\n`;
+      for (const p of sl.pens) {
+        const id = `'${p.id}'`;
+        code += `        { id: ${id.padEnd(5)}, x: ${String(p.x).padStart(4)},  w: ${String(p.w).padStart(3)} },\n`;
+      }
+      code += `      ]\n    },\n`;
+    }
+    code += '  };';
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = document.getElementById('calExport');
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy Layout Code'; }, 2000);
+    });
+  }
+
+  function initCalibration() {
+    document.getElementById('ctrlCalibrate').addEventListener('click', toggleCalibration);
+    document.getElementById('calClose').addEventListener('click', toggleCalibration);
+    document.getElementById('calExport').addEventListener('click', exportLayoutCode);
+    document.getElementById('calReset').addEventListener('click', () => {
+      location.reload();
+    });
+    initCalDrag();
+  }
+
+  function initViewControls() {
+    // Toggle pen outlines
+    document.getElementById('toggleOutlines').addEventListener('click', () => {
+      state.viewSettings.penOutlines = !state.viewSettings.penOutlines;
+      updateViewControlButtons();
+      rebuildOverlay();
+    });
+
+    // Toggle background image
+    document.getElementById('toggleBackground').addEventListener('click', () => {
+      state.viewSettings.showBackground = !state.viewSettings.showBackground;
+      updateViewControlButtons();
+      applyBackgroundSetting();
+    });
+
+    // Save changes
+    document.getElementById('saveChanges').addEventListener('click', () => {
+      saveViewSettings();
+      showSaveIndicator();
+    });
+
+    // Initialize button states
+    updateViewControlButtons();
+    applyBackgroundSetting();
+  }
+
+  function updateViewControlButtons() {
+    const outlineBtn = document.getElementById('toggleOutlines');
+    const backgroundBtn = document.getElementById('toggleBackground');
+    
+    if (state.viewSettings.penOutlines) {
+      outlineBtn.classList.add('map-control__btn--active');
+    } else {
+      outlineBtn.classList.remove('map-control__btn--active');
+    }
+    
+    if (state.viewSettings.showBackground) {
+      backgroundBtn.classList.add('map-control__btn--active');
+    } else {
+      backgroundBtn.classList.remove('map-control__btn--active');
+    }
+  }
+
+  function applyBackgroundSetting() {
+    const img = document.getElementById('mapBg');
+    if (state.viewSettings.showBackground) {
+      img.classList.remove('map-bg--hidden');
+    } else {
+      img.classList.add('map-bg--hidden');
+    }
+  }
+
+  function showSaveIndicator() {
+    const saveBtn = document.getElementById('saveChanges');
+    saveBtn.classList.add('map-control__btn--saved');
+    
+    // Remove saved indicator after 2 seconds
+    setTimeout(() => {
+      saveBtn.classList.remove('map-control__btn--saved');
+    }, 2000);
+  }
+
+  /* ----------------------------------------------------------
      INIT
      ---------------------------------------------------------- */
   function init() {
@@ -1211,6 +1610,8 @@
     initPanZoom();
     initMapInteraction();
     initControls();
+    initViewControls();
+    initCalibration();
 
     // Start polling loop
     setInterval(() => {
