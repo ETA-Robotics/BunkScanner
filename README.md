@@ -2,41 +2,6 @@
 
 Real-time feedlot bunk monitoring system with web-based dashboard for feed level tracking across multiple pen sections. Integrates with Arduino Opta hardware for industrial IoT data collection.
 
-**🚀 ACTIVE DEVELOPMENT**: This project is in Phase 1 R&D implementation as part of the ETA Engineering Technologies Australia + Barmount Feedlot partnership. See [`docs/`](docs/) for comprehensive project documentation.
-
-## Quick Start
-
-```bash
-# Start the backend server
-npm start
-
-# Run system diagnostics  
-npm run diagnostic:health
-npm run diagnostic:stress
-
-# Run tests
-npm test
-```
-
-## 📊 **Current Status**
-
-✅ **Architecture Validated**: System tested to 748 nodes (target: 540)  
-✅ **Backend Operational**: Express.js server with full API suite  
-✅ **Frontend Ready**: SVG-based real-time dashboard  
-🔄 **Hardware Development**: Custom PCB design and prototyping in progress  
-🔄 **Patent Applications**: 4 high-value innovations identified  
-
-## 📋 **Complete Documentation**
-
-All project documentation is centralized in [`docs/`](docs/):
-
-- **[📈 5-Year Strategic Plan](docs/5_YEAR_STRATEGIC_PLAN.md)**: Complete business roadmap ($500K → $70M revenue)
-- **[🚀 Phase 1 Tracker](docs/PHASE1_TRACKER.md)**: Current R&D implementation status  
-- **[🔧 Hardware Plan](docs/PROTOTYPING_PLAN.md)**: PCB design and manufacturing roadmap
-- **[🛡️ IP Strategy](docs/IP_STRATEGY.md)**: Patent portfolio and competitive protection
-- **[📦 Supply Chain](docs/SUPPLY_CHAIN_VALIDATION.md)**: Component sourcing and risk assessment
-- **[✅ Go/No-Go Milestone](docs/GO_NOGO_MILESTONE_1.md)**: Decision checkpoint framework
-
 ## Overview
 
 BunkScanner provides:
