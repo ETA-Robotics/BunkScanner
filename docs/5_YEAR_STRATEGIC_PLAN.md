@@ -3,33 +3,73 @@
 
 **Plan Period**: March 2026 - March 2031  
 **Partnership Model**: Joint Venture with Shared Investment & Revenue  
-**Market Opportunity**: $100M+ Agricultural IoT Platform  
+**Revision**: 2.0 — Corrected against real-world data (March 2026)  
 
 ---
 
 # EXECUTIVE SUMMARY
 
-## Vision Statement
-Transform from a feedlot monitoring hardware provider into the dominant agricultural IoT platform across Australia and internationally, with recurring revenue subscriptions, data analytics services, and technology licensing generating $50M+ annual revenue by Year 5.
+BunkScanner is a distributed Time-of-Flight sensor network for continuous feed bunk monitoring in feedlots. No competitor currently offers this specific solution. The technology is genuinely novel and sits in a market gap between expensive research-grade systems (GrowSafe, C-Lock at $50K-300K) and manual visual inspection.
+
+This plan uses two projection tracks: a **bootstrap** scenario (self-funded growth) and a **venture-backed** scenario (with external capital raise). Previous projections have been revised downward to reflect comparable ag-tech company trajectories.
 
 ## Financial Projections Summary
-| Year | Hardware Revenue | Software/SaaS | Licensing | Total Revenue | Key Milestone |
-|------|------------------|---------------|-----------|---------------|---------------|
-| **2026** | $300K-500K | $0 | $0 | $500K | First customer deployments |
-| **2027** | $1.5M-3M | $200K-500K | $0 | $2M-4M | Market establishment |
-| **2028** | $3M-6M | $1M-3M | $500K | $5M-10M | Platform transition |
-| **2029** | $5M-8M | $4M-8M | $2M-4M | $12M-20M | International expansion |
-| **2030** | $8M-12M | $10M-20M | $5M-10M | $25M-42M | Market dominance |
-| **2031** | $10M-15M | $20M-35M | $10M-20M | **$40M-70M** | **Exit readiness** |
 
-## Partnership Evolution
-- **Years 1-2**: Technical development and market entry partnership
-- **Years 3-4**: Platform scaling and international expansion  
-- **Years 5+**: Market leadership with strategic exit opportunities
+| Year | Bootstrap | With VC ($5M+ raise) | Key Milestone |
+|------|-----------|----------------------|---------------|
+| **2026** | $100K-300K | $100K-300K | Barmount pilot + 1-2 early adopters |
+| **2027** | $500K-1.5M | $1M-3M | SaaS platform, 8-12 installations |
+| **2028** | $2M-5M | $4M-8M | US market entry, 25-40 installations |
+| **2029** | $4M-8M | $8M-15M | International scale, 50-80 installations |
+| **2030** | $8M-15M | $15M-30M | Strategic exit window opens |
+
+*Context: Comparable ag-tech companies (Farmers Edge, Arable) took 10+ years to reach $20M ARR with $100M+ in funding.*
+
+## Partnership Structure
+- **ETA**: 68% — technology development, firmware, software, IP
+- **Barmount**: 32% — market access, installation, field operations
+- **Revenue sharing**: Varies by activity (system sales 60/40, installation 20/80)
 
 ---
 
-# YEAR 1 (2026): FOUNDATION & MARKET ENTRY
+# MARKET REALITY
+
+## Australian Feedlot Market
+- ~400-450 accredited feedlots (ALFA/MLA data)
+- ~60-80 large feedlots (5,000+ head capacity)
+- Total capacity: ~1.3 million head
+- At $100K/installation: **$6M-8M total addressable market domestically**
+
+## US Feedlot Market
+- ~26,000 feedlots in the US
+- ~2,000 with 1,000+ head capacity
+- ~500 with 10,000+ head (primary targets)
+- At $100K-200K/installation: **$100M-200M total addressable market**
+
+## Global Precision Livestock Farming
+- Published estimates: $3B-7B globally by 2028-2030
+- Feed monitoring subsegment: $200M-500M
+- Growth rate: 10-15% CAGR
+
+**Bottom line**: The domestic market alone cannot support aggressive growth. US/international expansion is required for anything above $8M annual revenue, and that requires capital, regulatory compliance, and local partnerships.
+
+---
+
+# COMPETITIVE LANDSCAPE
+
+| Competitor | Technology | Price Range | Key Difference |
+|-----------|-----------|-------------|----------------|
+| **GrowSafe** (Canada) | Load cells + RFID | $100K-300K | Per-animal research data; not operational monitoring |
+| **C-Lock** (South Dakota) | Feed stations + gas sensors | $50K-200K | Research + emissions focus |
+| **Digi-Star / Topcon** | Mixer scales, load cells | $5K-50K | Monitors feed delivery, not consumption |
+| **HerdX** (Texas) | RFID, water monitoring | Varies | No feed bunk monitoring |
+| **Micro Beef** (Texas) | RFID identification, sorting | Enterprise | Management system, not sensing |
+
+**BunkScanner's gap**: Low-cost, continuous, non-contact bunk-level monitoring using distributed ToF sensors. No one else does this. The open question is whether feedlot operators will pay $50K-150K for something they currently handle with a person walking the bunks.
+
+---
+
+# YEAR 1 (2026): FOUNDATION
 
 ## Phase 1: R&D & Technology Development (Weeks 1-20)
 **Timeline**: March - August 2026  
@@ -37,314 +77,164 @@ Transform from a feedlot monitoring hardware provider into the dominant agricult
 
 ### Q1 2026: Partnership Formation & Architecture
 - [x] **Partnership agreement**: Legal structure and revenue sharing
-- [x] **System architecture**: 540-node scalability validated (748 nodes tested)
-- [x] **Component validation**: VL53L7CX sensor sourcing (2,160 units)
-- [x] **IP strategy**: 4 patent applications ($45K-78K portfolio)
+- [x] **System architecture**: 748-node network configured across 7 buses
+- [ ] **Component validation**: VL53L7CX sensor sourcing (2,992 units for full deployment)
+- [ ] **IP strategy**: Prior art search required before filing (see IP_STRATEGY.md)
 
 ### Q2 2026: Hardware Prototyping
-- [ ] **PCB design**: STM32G071 custom sensor node boards
+- [ ] **PCB design**: STM32G071 custom sensor node boards (schematic not yet started)
 - [ ] **50-node pilot**: Prototype system at Barmount facility
-- [ ] **Auto-addressing**: GPIO daisy-chain protocol validation
+- [ ] **Auto-addressing**: GPIO daisy-chain hardware validation on physical nodes
 - [ ] **Manufacturing**: Supply chain and assembly partners
+
+### Current Development Status (Honest Assessment)
+- **Backend server**: Express.js skeleton — works but has no database, no auth, no historical storage
+- **Web dashboard**: SVG layout renders, untested at 748-node scale
+- **Firmware**: ~30% complete — Modbus slave mock, auto-addressing protocol written but untested on hardware, VL53L7CX driver incomplete, sensor fusion not implemented
+- **Stress test**: bus-diagnostic.js stress mode exists but no recorded test results in the repo
 
 ## Phase 2: Pilot Deployment & Customer Acquisition (Weeks 21-52)
 **Timeline**: September 2026 - March 2027  
-**Revenue Target**: $300K-500K  
+**Revenue Target**: $100K-300K  
 
 ### Q3 2026: Barmount Deployment
-- [ ] **540-node installation**: Complete Barmount feedlot system
-- [ ] **Customer pipeline**: 3-5 prospects through Barmount network  
+- [ ] **748-node installation**: Complete Barmount feedlot system across 43 pens
+- [ ] **Customer pipeline**: Identify prospects through Barmount network
 - [ ] **Installation team**: Barmount staff training and certification
-- [ ] **Case studies**: Performance data and customer testimonials
+- [ ] **Case studies**: Collect real performance data vs. manual bunk scoring
 
-### Q4 2026: First Customer Sales
-- [ ] **Customer deployments**: 2-3 additional feedlot installations
-- [ ] **Service delivery**: Barmount-led installation and training
-- [ ] **Revenue sharing**: Partnership financial model validation
-- [ ] **System optimization**: Field performance improvements
+### Q4 2026: First Sales
+- [ ] **1-2 additional installations**: Target large feedlots in Barmount's network
+- [ ] **Revenue sharing**: Validate partnership financial model
+- [ ] **System optimization**: Iterate on field performance issues
 
-**Year 1 Results**: 
-- **3-4 customer installations**
-- **$300K-500K revenue** 
-- **Proven technology platform**
-- **Market credibility established**
+**Year 1 Target**: Barmount pilot operational + 1-2 paying customers. $100K-300K revenue.
 
 ---
 
 # YEAR 2 (2027): MARKET ESTABLISHMENT
 
-## Q1-Q2 2027: Scale Operations
-**Revenue Target**: $1M-2M  
+**Revenue Target**: $500K-1.5M (bootstrap) / $1M-3M (VC-backed)  
 **Customer Target**: 8-12 installations  
 
-### Market Expansion Strategy:
-- **Geographic**: Beyond Barmount's immediate network
-- **Customer base**: Direct sales to large feedlots (1,000+ head)
-- **Service enhancement**: 24/7 monitoring and support services
-- **Team scaling**: Additional installation and customer success staff
+### Market Expansion
+- Expand beyond Barmount's immediate network via referrals and trade shows
+- Target large Australian feedlots (5,000+ head)
+- Begin SaaS platform development (subscription model $10K-20K/year per customer)
 
-### Technology Enhancement:
-- [ ] **Cloud platform**: SaaS infrastructure development
-- [ ] **Mobile app**: Real-time monitoring for feedlot managers
-- [ ] **Analytics**: Feed consumption patterns and predictive insights
-- [ ] **Integration**: APIs for feed management software partnerships
+### Technology
+- [ ] Cloud platform and mobile app for remote monitoring
+- [ ] Feed consumption analytics and reporting
+- [ ] API integrations with existing feed management software
 
-## Q3-Q4 2027: Platform Transition
-**Revenue Target**: $2M-4M annually  
-**Customer Target**: 15-20 installations  
+### Adjacent Market Research
+- [ ] Grain storage feasibility study
+- [ ] Dairy silage monitoring assessment
+- [ ] Water trough/lagoon level monitoring — determine if the hardware adapts
 
-### SaaS Model Launch:
-- **Subscription pricing**: $10K-20K annual recurring revenue per customer
-- **Data analytics**: Premium insights and reporting services
-- **Customer transition**: Hardware customers to subscription model
-- **Professional services**: Consulting and optimization services
-
-### Adjacent Market Validation:
-- [ ] **Grain storage**: System adaptation for grain elevators
-- [ ] **Dairy operations**: Silage bunker monitoring pilots
-- [ ] **Water management**: Trough and lagoon level monitoring
-- [ ] **International**: Export market feasibility studies
-
-**Year 2 Results**:
-- **15-20 customer installations**
-- **$2M-4M annual revenue**  
-- **SaaS platform operational**
-- **Adjacent markets validated**
+**Year 2 Target**: Establish repeatable sales process. SaaS infrastructure operational.
 
 ---
 
-# YEAR 3 (2028): PLATFORM SCALING
+# YEAR 3 (2028): SCALING
 
-## Q1-Q2 2028: Technology Leadership
-**Revenue Target**: $5M-8M annually  
-**Customer Base**: 40-60+ installations  
+**Revenue Target**: $2M-5M (bootstrap) / $4M-8M (VC-backed)  
+**Customer Base**: 25-40 installations  
 
-### Product Portfolio Expansion:
-- **BunkScanner Pro**: Enhanced analytics and AI-powered insights
-- **GrainScanner**: Adapted for grain storage facilities (50M+ market)
-- **WaterScanner**: Livestock water monitoring systems
-- **DairyScanner**: Silage and feed monitoring for dairy operations
+### US Market Entry
+- ~500 US feedlots with 10,000+ head are primary targets
+- Requires USDA/FDA regulatory compliance assessment
+- Local distribution or partnership model needed
+- Budget separately for US market development ($500K-1M)
 
-### Advanced Features:
-- [ ] **AI/ML platform**: Predictive health analytics from feed consumption
-- [ ] **Blockchain integration**: Feed traceability and certification
-- [ ] **Weather integration**: Environmental correlation and optimization
-- [ ] **Herd management**: Integration with livestock breeding systems
+### Product Portfolio
+- **BunkScanner Pro**: Enhanced analytics tier
+- **GrainScanner**: Only if grain storage feasibility confirmed in Year 2
+- Each adjacent product requires its own R&D cycle and budget — not "free" extensions
 
-## Q3-Q4 2028: International Expansion
-**Revenue Target**: $8M-12M annually  
-**Geographic Target**: US/Canada market entry  
-
-### International Strategy:
-- **US feedlot market**: 70,000+ feedlots, 500+ large operators
-- **Canadian agriculture**: Feedlot and dairy market penetration
-- **Regulatory compliance**: USDA/FDA agricultural monitoring standards
-- **Local partnerships**: US agricultural technology distributors
-
-### Strategic Partnerships:
-- [ ] **Cargill**: Feed optimization and supply chain integration
-- [ ] **John Deere**: Precision agriculture platform partnerships
-- [ ] **Allflex/Merck**: Livestock health monitoring integration
-- [ ] **Insurance companies**: Risk assessment and premium optimization
-
-**Year 3 Results**:
-- **50+ customer installations globally**
-- **$8M-12M annual revenue**
-- **International market presence**
-- **Technology platform leadership**
+### Partnerships
+- Target integration partnerships with existing feed management platforms (not Cargill/John Deere direct — start with mid-tier software vendors)
 
 ---
 
-# YEAR 4 (2029): MARKET DOMINANCE
+# YEAR 4 (2029): EXPANSION
 
-## Q1-Q2 2029: Platform Ecosystem
-**Revenue Target**: $12M-18M annually  
-**Market Position**: Leading agricultural IoT platform  
+**Revenue Target**: $4M-8M (bootstrap) / $8M-15M (VC-backed)  
+**Customer Base**: 50-80 installations globally  
 
-### Ecosystem Development:
-- **Developer platform**: Third-party app development and integrations
-- **API marketplace**: Revenue sharing with software partners  
-- **Data licensing**: Agricultural insights to research and agribusiness
-- **White-label platform**: Technology licensing to competitors
+### Platform Development
+- Third-party integrations and API ecosystem
+- Data licensing opportunities with research institutions
+- Carbon footprint / sustainability monitoring features (growing regulatory demand)
 
-### Advanced Analytics Services:
-- [ ] **Predictive modeling**: Disease outbreak early warning systems
-- [ ] **Supply chain optimization**: Feed procurement and distribution
-- [ ] **Carbon footprint**: Sustainability monitoring and reporting
-- [ ] **Financial modeling**: ROI optimization for livestock operations
-
-## Q3-Q4 2029: Industry Transformation
-**Revenue Target**: $15M-25M annually  
-**Service Evolution**: Platform-as-a-Service model  
-
-### Market Leadership Initiatives:
-- **Industry standards**: Influence agricultural IoT protocols
-- **Research partnerships**: Universities and agricultural research institutes
-- **Government contracts**: Agricultural monitoring for policy compliance
-- **Acquisition targets**: Complementary technology companies
-
-### Technology Innovation:
-- [ ] **Edge AI**: On-device machine learning for real-time insights
-- [ ] **Satellite integration**: Remote monitoring for large operations  
-- [ ] **Drone connectivity**: Aerial monitoring integration
-- [ ] **5G/IoT networks**: Next-generation wireless connectivity
-
-**Year 4 Results**:
-- **Industry-standard platform**
-- **$15M-25M annual revenue**
-- **Technology ecosystem leadership**
-- **Strategic acquisition opportunities**
+### Technology
+- Edge computing on gateway nodes for local analytics
+- Investigate next-gen sensor options (reduce single-source VL53L7CX dependency)
 
 ---
 
-# YEAR 5 (2030): EXIT READINESS
+# YEAR 5 (2030): STRATEGIC OPTIONS
 
-## Q1-Q2 2030: Strategic Positioning
-**Revenue Target**: $25M-35M annually  
-**Market Cap Equivalent**: $200M-400M enterprise value  
+**Revenue Target**: $8M-15M (bootstrap) / $15M-30M (VC-backed)  
 
-### Strategic Options Evaluation:
-- **IPO preparation**: Public market readiness assessment
-- **Strategic acquisition**: Interest from agricultural technology giants
-- **Private equity**: Growth capital for international expansion
-- **Technology licensing**: Platform licensing to major corporations
+### Exit Scenarios
 
-### Financial Optimization:
-- **Recurring revenue**: 70%+ SaaS and subscription revenue
-- **Margin improvement**: High-margin software vs. hardware services
-- **International revenue**: 40%+ revenue from international markets
-- **Customer diversification**: Multiple industries and geographic regions
+| Scenario | Realistic Valuation | Notes |
+|----------|---------------------|-------|
+| **Strategic acquisition** | $40M-150M | Ag-tech typically acquired at 5-10x revenue |
+| **Private equity** | $30M-80M | Growth capital for next stage |
+| **Continue operating** | N/A | Profitable business, no exit required |
 
-## Q3-Q4 2030: Market Leadership
-**Revenue Target**: $30M-50M annually  
-**Strategic Value**: $300M-600M enterprise valuation  
+*Context: These valuations assume 5-10x revenue multiples, which is standard for ag-tech. Previous estimates of $300M-800M were not grounded in comparable transactions at these revenue levels.*
 
-### Platform Maturity:
-- **100,000+ connected sensors** across multiple industries
-- **1,000+ customer installations** globally
-- **50+ technology partners** in ecosystem
-- **$50M+ annual recurring revenue** from subscriptions
+### ROI for Partners (Bootstrap Scenario)
 
-### Exit Strategy Execution:
-- [ ] **Due diligence preparation**: Financial and technical audits
-- [ ] **Strategic buyer identification**: John Deere, Cargill, Amazon (agriculture)  
-- [ ] **IPO readiness**: Investment banking engagement and preparation
-- [ ] **Valuation optimization**: Multiple revenue streams and growth trajectory
+| Partner | Investment | Year 5 Return (at 5-10x multiple) | ROI |
+|---------|-----------|-----------------------------------|-----|
+| **ETA** | $150K-300K | $24M-90M (68% of enterprise) | 80x-300x |
+| **Barmount** | $75K-150K | $13M-48M (32% of enterprise) | 85x-320x |
 
-**Year 5 Results**:
-- **Market-leading platform**
-- **$40M-70M annual revenue**
-- **Strategic exit execution**
-- **10x+ partnership ROI achieved**
+An 80-300x return on a $150K-300K investment is still an outstanding outcome.
 
 ---
 
-# PARTNERSHIP EVOLUTION & EXIT STRATEGY
+# RISKS
 
-## Partnership Value Distribution
-### Years 1-2 (Development Phase):
-- **ETA**: 68% technology contribution + higher revenue share from software
-- **Barmount**: 32% market contribution + higher revenue share from services
+### Technology
+- **VL53L7CX single-source**: No pin-compatible alternative exists. ST Microelectronics is the sole manufacturer
+- **Firmware completion**: Significant development work remains (~30% done)
+- **No database or auth**: Production system needs proper data infrastructure
 
-### Years 3-5 (Scale Phase):
-- **Revenue sharing evolution**: More balanced as both partners scale operations
-- **Geographic territories**: Potential division of international markets
-- **Service specialization**: ETA (technology/software) vs Barmount (services/installation)
+### Market
+- **Unvalidated demand**: No paying customer beyond Barmount yet
+- **Agricultural purchasing cycles**: Seasonal (Sep-Mar in Australia)
+- **Sales team**: Growing beyond 10 customers requires dedicated sales (not budgeted in Phase 1)
 
-## Exit Scenarios & Valuations
+### IP
+- **Schneider patent (AU2012245501B2)**: Covers auto-addressing on Modbus/RS-485 bus broadly. FTO analysis required before filing Patent #2
+- **30 years of prior art**: Automated feedlot management (Micro Beef, 1994). Broad claims around "automated feedlot monitoring" face prior art challenges
 
-### Scenario 1: Strategic Acquisition ($300M-600M)
-**Buyers**: John Deere, Cargill, Amazon Agriculture, Microsoft (Azure IoT)
-- **ETA share**: ~$180M-360M (technology and IP value)  
-- **Barmount share**: ~$120M-240M (market access and service operations)
-
-### Scenario 2: IPO ($400M-800M public valuation)  
-**Timeline**: 2030-2031 public offering
-- **Combined partnership value**: $400M-800M at IPO
-- **Continued partnership**: Public company with founder shares
-
-### Scenario 3: Technology Licensing ($200M-400M)
-**Model**: License platform to multiple large agricultural companies
-- **Recurring licensing revenue**: $50M-100M annually  
-- **Partnership continues**: Focus on R&D and platform development
-
-## ROI Analysis for Partners
-
-### ETA Engineering Technologies:
-**Investment**: $150K-300K over 5 years  
-**Return**: $180M-360M (1,200x-1,200x ROI)  
-**Key value**: Technology IP and platform ownership
-
-### Barmount Feedlot:
-**Investment**: $75K-150K over 5 years  
-**Return**: $120M-240M (1,600x-1,600x ROI)  
-**Key value**: Market access and service operations
-
----
-
-# IMPLEMENTATION ROADMAP
-
-## Critical Success Factors
-
-### Technology Excellence:
-- **Patent protection**: 4+ granted patents providing competitive moat  
-- **Scalability**: Platform handles 100,000+ sensors reliably
-- **Innovation**: Continuous R&D and feature development
-- **Integration**: Seamless connectivity with agriculture software ecosystems
-
-### Market Execution:
-- **Customer success**: 99%+ customer retention and satisfaction
-- **Partnership leverage**: Maximize Barmount industry relationships  
-- **International expansion**: Successful entry into US/Canadian markets
-- **Adjacent markets**: Diversification beyond feedlot monitoring
-
-### Financial Management:
-- **Capital efficiency**: Maximize growth per dollar invested
-- **Revenue diversification**: Balance hardware, software, and services
-- **Margin expansion**: Transition to high-margin software business
-- **Exit optimization**: Position for maximum valuation and strategic value
-
-## Risk Management & Contingencies
-
-### Technology Risks:
-- **Component supply**: Diversify sensor suppliers and maintain inventory
-- **Competition**: Continuous innovation and IP protection
-- **Technical debt**: Regular platform updates and architecture evolution
-
-### Market Risks:  
-- **Adoption rates**: Focus on customer success and ROI demonstration
-- **Economic cycles**: Diversification across industries and geographies
-- **Regulatory changes**: Proactive compliance and government relationships
-
-### Partnership Risks:
-- **Alignment maintenance**: Regular strategic reviews and communication
-- **Succession planning**: Management transitions and continuity
-- **Exit coordination**: Aligned timeline and valuation expectations
+### Financial
+- **No SaaS infrastructure exists yet** — subscription revenue requires platform development investment
+- **Adjacent market products** (GrainScanner, WaterScanner) each need their own R&D budget
 
 ---
 
 # CONCLUSION
 
-The BunkScanner 5-year strategic plan positions the ETA-Barmount partnership to capture a $100M+ market opportunity through:
+BunkScanner fills a genuine gap: low-cost, continuous feed bunk monitoring using distributed ToF sensors. No competitor offers this. The Barmount partnership provides a real pilot site and industry credibility. The core technology is strong.
 
-1. **Proven technology platform** (540+ node scalability validated)
-2. **Strong industry partnership** (Barmount market credibility)  
-3. **Defensible IP portfolio** (4+ patents creating competitive moat)
-4. **Multiple revenue streams** (hardware, SaaS, licensing, services)
-5. **International expansion** (US/Canada $1B+ addressable market)
-6. **Strategic exit opportunities** ($300M-800M enterprise value)
+The path to a $8M-15M business over 5 years (bootstrapped) is achievable and represents an excellent return. Growth beyond that requires capital, international expansion, and validated product-market fit beyond pilot deployments.
 
-**Key Success Metrics**:
-- **Year 1**: Market validation ($500K revenue)
-- **Year 2**: Platform establishment ($2M-4M revenue)  
-- **Year 3**: Technology leadership ($8M-12M revenue)
-- **Year 4**: Market dominance ($15M-25M revenue)
-- **Year 5**: Exit readiness ($40M-70M revenue)
-
-**Partnership ROI**: 1,200x-1,600x return on initial investment over 5 years, with strategic exit opportunities providing generational wealth creation for both partners.
+**Immediate priorities**:
+1. Complete firmware and hardware prototyping
+2. Get FTO analysis on the Schneider auto-addressing patent
+3. Source VL53L7CX sensors and validate supply chain
+4. Deploy and prove the Barmount pilot
+5. Get first paying customer outside the partnership
 
 ---
 
-*Strategic Plan Version 1.0*  
-*Created: March 19, 2026*  
+*Strategic Plan Version 2.0*  
+*Revised: March 19, 2026 — corrected against real-world data*  
 *Next Review: September 2026 (6-month checkpoint)*

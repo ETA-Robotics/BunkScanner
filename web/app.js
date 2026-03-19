@@ -73,9 +73,9 @@
     B: {
       label: 'B Side',
       totalLength: 500,
-      y: 939,
+      y: 1010,
       bunkH: 16,
-      labelPos: { x: 200, y: 980 },
+      labelPos: { x: 200, y: 950 },
       pens: [
         { id: 'B20', x: 368,  w: 100 },
         { id: 'B19', x: 468,  w: 99 },
@@ -102,7 +102,7 @@
     Z: {
       label: 'Z Side',
       totalLength: 500,
-      y: 1050,
+      y:1027,
       bunkH: 16,
       labelPos: { x: 200, y: 1065 },
       pens: [
@@ -207,10 +207,10 @@
 
       // Pen depths vary by side based on typical feedlot design
       const penDepth = {
-        'D': 140, // D side pens extend north (upward)
-        'C': 200, // C side pens extend south (downward)  
-        'B': 160, // B side pens extend north (upward)
-        'Z': 130  // Z side pens extend south (downward)
+        'D': 270, // D side pens extend north (reduced height)
+        'C': 240, // C side pens extend south to central road
+        'B': 230, // B side pens extend north (upward)
+        'Z': 245  // Z side pens extend south (downward)
       }[sideKey];
 
       const penDirection = (sideKey === 'D' || sideKey === 'B') ? -1 : 1; // Direction from bunk
@@ -260,22 +260,11 @@
       {
         id: 'ref-truck-haul-road', 
         points: [
-          { x: 280, y: 320 }, { x: 2350, y: 320 }, { x: 2350, y: 360 }, { x: 280, y: 360 }, { x: 280, y: 320 }
+          { x: 280, y: 185 }, { x: 2350, y: 185 }, { x: 2350, y: 205 }, { x: 280, y: 205 }, { x: 280, y: 185 }
         ],
         isReference: true,
         color: '#2c3e50',
         label: 'TRUCK HAUL ROAD',
-        type: 'road'
-      },
-      // Perimeter access roads
-      {
-        id: 'ref-perimeter-north',
-        points: [
-          { x: 50, y: 280 }, { x: 2400, y: 280 }, { x: 2400, y: 310 }, { x: 50, y: 310 }, { x: 50, y: 280 }
-        ],
-        isReference: true,
-        color: '#bdc3c7',
-        label: 'Perimeter North',
         type: 'road'
       },
       // Feed truck roads between pen rows
@@ -292,7 +281,7 @@
       {
         id: 'ref-feed-road-bz',
         points: [
-          { x: 340, y: 1006 }, { x: 2350, y: 1006 }, { x: 2350, y: 1034 }, { x: 340, y: 1034 }, { x: 340, y: 1006 }
+          { x: 297, y: 1010 }, { x: 2328, y: 1010 }, { x: 2328, y: 1027 }, { x: 297, y: 1027 }, { x: 297, y: 1010 }
         ],
         isReference: true,
         color: '#95a5a6',
@@ -423,52 +412,6 @@
       }
     ];
 
-    // WATER & WASTE SYSTEMS
-    const waterOutlines = [
-      // Water wells
-      {
-        id: 'ref-well-1',
-        points: [
-          { x: 2650, y: 300 }, { x: 2680, y: 300 }, { x: 2680, y: 330 }, { x: 2650, y: 330 }, { x: 2650, y: 300 }
-        ],
-        isReference: true,
-        color: '#3498db',
-        label: 'Well 1',
-        type: 'water'
-      },
-      // Water storage tanks (positioned as shown in upper left area near C1)
-      {
-        id: 'ref-water-tank-1',
-        points: [
-          { x: 1450, y: 350 }, { x: 1500, y: 350 }, { x: 1500, y: 400 }, { x: 1450, y: 400 }, { x: 1450, y: 350 }
-        ],
-        isReference: true,
-        color: '#2980b9',
-        label: 'Water Tank 1',
-        type: 'water'
-      },
-      {
-        id: 'ref-water-tank-2',
-        points: [
-          { x: 1510, y: 350 }, { x: 1560, y: 350 }, { x: 1560, y: 400 }, { x: 1510, y: 400 }, { x: 1510, y: 350 }
-        ],
-        isReference: true,
-        color: '#2980b9',
-        label: 'Water Tank 2',
-        type: 'water'
-      },
-      // Distribution system
-      {
-        id: 'ref-water-distribution',
-        points: [
-          { x: 2600, y: 400 }, { x: 2700, y: 400 }, { x: 2700, y: 450 }, { x: 2600, y: 450 }, { x: 2600, y: 400 }
-        ],
-        isReference: true,
-        color: '#5dade2',
-        label: 'Water Distribution',
-        type: 'water'
-      }
-    ];
 
     // ADDITIONAL INFRASTRUCTURE
     const additionalOutlines = [
@@ -508,7 +451,7 @@
     ];
 
     // Combine all reference elements
-    referenceOutlines.push(...roadOutlines, ...facilityOutlines, ...waterOutlines, ...additionalOutlines);
+      referenceOutlines.push(...roadOutlines, ...facilityOutlines, ...additionalOutlines);
     
     return referenceOutlines;
   }
@@ -828,17 +771,17 @@
           const rect = document.createElementNS(svgNS, 'rect');
           rect.setAttribute('x', penLayout.x + si * segW);
           
-          // Position sensor readings: bottom of C row, top of B and D rows
+          // Position sensor readings: within pen boundaries
           let sensorY;
           if (sideKey === 'C') {
-            // Bottom of C row (far end of pens)
-            sensorY = sideLayout.y + sideLayout.bunkH + 200;
+            // Bottom of C row (within pen area, near central road)
+            sensorY = sideLayout.y + sideLayout.bunkH + 220;
           } else if (sideKey === 'D') {
-            // Top of D row (far end of pens - they extend upward)
-            sensorY = sideLayout.y + sideLayout.bunkH - 140;
+            // Top of D row (within pen area, near far end)
+            sensorY = sideLayout.y - 250;
           } else if (sideKey === 'B') {
-            // Top of B row (far end of pens - they extend upward)  
-            sensorY = sideLayout.y + sideLayout.bunkH - 160;
+            // Top of B row (within pen area, near far end)  
+            sensorY = sideLayout.y - 140;
           } else {
             // Default for any other rows
             sensorY = sideLayout.y;

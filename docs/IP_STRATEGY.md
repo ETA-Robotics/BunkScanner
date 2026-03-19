@@ -1,138 +1,138 @@
 # BunkScanner IP Strategy & Patent Tracking
 ## Phase 1 - Intellectual Property Protection
 
-**Status**: PATENT SEARCH IN PROGRESS  
-**Timeline**: Applications filed by Week 16 (before market entry)  
+**Status**: PRIOR ART REVIEW COMPLETE — FILING STRATEGY REVISED  
+**Revision**: 2.0 — Updated with patent landscape findings (March 2026)  
 
 ---
 
-## Identified Patentable Innovations
+## Prior Art Findings — Critical Issues
 
-### 1. Multi-Camera Fill Level Algorithm ⭐ HIGH VALUE
-**Technical Basis**: 4-sensor redundancy with confidence scoring  
-**Innovation**: Per-zone variance analysis + fault detection  
-**Market Impact**: Core differentiation vs. single-sensor competitors  
+### AU2012245501B2 — Schneider Electric (AUTO-ADDRESSING)
+**"System and method for automatically addressing devices in a multi-drop network"**  
+- Filed: April 2012 | Granted: September 2016 | **ACTIVE**
+- Jurisdictions: WO, EP, US, CN, AU, DK
+- 25 claims, 41 citations, 64 cited-by
+
+This patent covers automatic address assignment to devices on a shared Modbus/RS-485 bus. Schneider uses random dynamic address + collision detection. BunkScanner uses sequential GPIO daisy-chain (ADDR_IN/ADDR_OUT). The physical mechanism differs, but the functional outcome is identical: automatic address assignment on Modbus RS-485 without manual configuration.
+
+**Impact**: Broad claims in AU2012245501B2 may read onto BunkScanner's approach. **FTO analysis is mandatory before filing Patent #2.**
+
+### US10085419B2 — C-Lock Inc. (FEED MONITORING)
+**"Modular livestock feed system for measuring animal intake and monitoring animal behavior"**  
+- Filed: July 2016 | Granted: October 2018 | **ACTIVE**
+
+Different approach (individual RFID-gated feed bins vs. open bunk ToF sensors), but the core function of automated feed level/intake monitoring in livestock operations overlaps.
+
+### US7836849B2 — Micro Beef Technologies (BROAD PRIOR ART)
+**"Cattle management method and system"**  
+- Priority: October 1994 | Granted: November 2010 | Likely expired or expiring
+
+Demonstrates automated feedlot management is not a new concept. 30+ years of prior art. Any broad claims around "automated feedlot monitoring" face prior art challenges.
+
+### US11771057B2 — HerdX, Inc. (LIVESTOCK MANAGEMENT)
+- Filed: December 2017 | Granted: October 2023 | **ACTIVE**
+- Broad livestock management systems including water monitoring, health analytics
+- Risk: LOW-MEDIUM. Different sensor approach.
+
+### CN112653743A — Guangzhou Robustel (RS485 ADDRESSING)
+- Filed: December 2020 | Published: April 2021
+- Multi-sensor addressing on RS485 bus, sequential within subnets
+- Risk: MEDIUM. Chinese patent; may not affect AU/US filing but shows concept is not novel.
+
+---
+
+## Revised Patent Strategy
+
+### 1. Multi-Camera Fill Level Algorithm — PROCEED (Strongest Candidate)
+**Technical Basis**: 4× VL53L7CX sensors per node with confidence scoring  
+**Innovation**: Per-zone variance analysis + fault detection across 8×8 grid  
+**Prior Art Status**: No direct prior art found for ToF multi-sensor feed level with confidence metrics  
 
 **Patent Scope**:
-- "Multi-sensor feed level determination system with confidence metrics"
+- Multi-sensor feed level determination with confidence metrics
 - 8×8 zone grid processing with missing sensor compensation
 - Automatic variance-based mixing quality assessment
 - Environmental contamination filtering (distance validation)
 
-**Filing Priority**: IMMEDIATE (Week 6-8)  
+**Filing Priority**: IMMEDIATE — file after FTO clears  
 **Estimated Cost**: $15,000-25,000  
+**Recommendation**: Narrow claims to VL53L7CX-specific implementation in agricultural application
 
-### 2. GPIO Daisy-Chain Auto-Addressing ⭐ HIGH VALUE
+### 2. GPIO Daisy-Chain Auto-Addressing — HIGH RISK, DEFER
 **Technical Basis**: ADDR_IN/ADDR_OUT sequential propagation  
-**Innovation**: Plug-and-play Modbus deployment without configuration  
-**Market Impact**: Major installation cost savings vs. manual addressing  
+**Prior Art Threat**: AU2012245501B2 (Schneider)  
 
-**Patent Scope**:
-- "Automatic sequential addressing for distributed sensor networks"
-- GPIO state propagation with flash persistence
-- Power-cycle recovery without re-addressing
-- Modbus integration with automatic node discovery
+**Action Required**:
+1. Engage patent attorney for FTO analysis ($10K-15K)
+2. Review Schneider's 25 claims against GPIO-specific mechanism
+3. Determine if hardware-specific claims are patentable around Schneider's scope
+4. File only if FTO is clear — otherwise protect as trade secret
 
-**Filing Priority**: Week 8-10  
-**Estimated Cost**: $12,000-20,000  
+**Filing Priority**: ON HOLD until FTO complete  
+**Estimated Cost**: $10K-15K (FTO) + $12K-20K (filing, if cleared)  
 
-### 3. Sensor Fusion Architecture 🔷 MEDIUM VALUE
+### 3. Sensor Fusion Architecture — PROCEED WITH CAUTION
 **Technical Basis**: VL53L7CX + backup sensor integration  
-**Innovation**: Heterogeneous sensor mixing in single firmware  
-**Market Impact**: Supply chain resilience + cost optimization  
+**Prior Art Status**: General concept well-known; no ag-specific ToF prior art found  
 
 **Patent Scope**:
-- "Adaptive sensor fusion for time-of-flight distance measurement"
+- Adaptive sensor fusion for time-of-flight distance measurement in agricultural settings
 - Runtime sensor type detection and algorithm switching
 - Cross-sensor reliability validation
 
-**Filing Priority**: Week 12-14  
+**Filing Priority**: Week 12-14 (after Patent #1 filed)  
 **Estimated Cost**: $10,000-18,000  
+**Recommendation**: File narrow claims tied to agricultural ToF application
 
-### 4. Predictive Feed Analytics 🔷 MEDIUM VALUE
+### 4. Predictive Feed Analytics — DROP FOR NOW
 **Technical Basis**: Consumption pattern analysis + anomaly detection  
-**Innovation**: Herd health correlation via feed behavior  
-**Market Impact**: Premium SaaS features + veterinary partnerships  
+**Prior Art**: US7836849B2 shows 30 years of automated cattle data analysis  
+**Software Patent Weakness**: Software patents are weak in Australia  
 
-**Patent Scope**:
-- "Livestock health monitoring via automated feed consumption analysis"
-- Pattern recognition for disease early warning
-- Multi-pen correlation analysis
-
-**Filing Priority**: Week 16-18  
-**Estimated Cost**: $8,000-15,000  
+**Recommendation**: Save $8K-15K. Focus budget on hardware patents. Revisit if/when unique data patterns emerge from real deployments.
 
 ---
 
-## Patent Filing Timeline
+## Revised Patent Filing Timeline
 
-| Week | Patent Application | Cost | Status |
-|------|-------------------|------|---------|
-| **6-8** | Multi-Camera Algorithm | $15K-25K | 🔄 Prep |
-| **8-10** | Auto-Addressing Protocol | $12K-20K | ⏳ Queue |
-| **12-14** | Sensor Fusion | $10K-18K | ⏳ Queue |
-| **16-18** | Predictive Analytics | $8K-15K | ⏳ Queue |
+| Priority | Patent Application | Cost | Status |
+|----------|-------------------|------|--------|
+| **1** | Multi-Camera Algorithm | $15K-25K | Ready to prep — strongest position |
+| **2** | FTO Analysis (Schneider patent) | $10K-15K | **MUST DO BEFORE Patent #2 filing** |
+| **3** | Auto-Addressing (if FTO clears) | $12K-20K | ON HOLD |
+| **4** | Sensor Fusion | $10K-18K | Queue |
+| ~~5~~ | ~~Predictive Analytics~~ | ~~$8K-15K~~ | DROPPED — weak case, save budget |
 
-**Total IP Investment**: $45,000-78,000  
-
----
-
-## Competitive Patent Analysis
-
-### Existing Patents to Review:
-- [ ] **John Deere**: Precision agriculture monitoring systems
-- [ ] **Cargill**: Automated feed management patents  
-- [ ] **Allflex**: Livestock monitoring and sensor networks
-- [ ] **Various**: Ultrasonic level sensing in agricultural applications
-
-### Patent Search Tasks:
-- [ ] **USPTO search**: Feed monitoring + sensor networks
-- [ ] **European search**: Agricultural IoT + livestock monitoring  
-- [ ] **Prior art analysis**: Distance sensing + feed level measurement
-- [ ] **Patent attorney consultation**: Filing strategy and scope definition
+**Revised Total IP Investment**: $47,000-78,000 (includes FTO analysis)  
+**If Auto-Addressing blocked**: $35,000-58,000 (patents #1 and #3 only + FTO cost)
 
 ---
 
-## IP Protection Strategy
+## Trade Secrets (No Filing — Protect Internally)
 
-### Trade Secrets (No Filing):
 - **Modbus protocol extensions**: Custom function codes (FC 0x41-0x43)
-- **Calibration algorithms**: Specific WFLBT02 bunk measurements
+- **Calibration algorithms**: Bunk-specific measurements and offsets
 - **Manufacturing processes**: PCB assembly and testing procedures
+- **Auto-addressing protocol details**: If FTO blocks patent, protect as trade secret instead
 
-### Defensive Publications:
-- **System architecture**: 7-bus distributed topology
-- **Data aggregation**: JSON format and API specifications
-- **Installation procedures**: Mounting and commissioning processes
-
-### Copyright Protection:
-- **Source code**: Firmware and software implementations
-- **Documentation**: Installation guides and user manuals
+## Copyright Protection
+- **Source code**: All firmware and software under private ETA license
+- **Documentation**: Installation guides, user manuals
 - **Web interface**: Dashboard design and visualization
 
 ---
 
-## Legal Team Requirements
+## Next Actions (This Week)
 
-### Patent Attorney Selection:
-- [ ] **Agricultural technology expertise**: Experience with precision ag patents
-- [ ] **IoT/sensor network experience**: Understanding of distributed systems  
-- [ ] **Cost structure**: Fixed fee vs. hourly for multiple applications
-- [ ] **Filing strategy**: US first, then PCT for international protection
+1. **Patent attorney**: Interview 3+ firms with ag-tech and IoT experience
+2. **FTO analysis**: Priority engagement for AU2012245501B2 review
+3. **Patent #1 prep**: Document multi-camera fill level algorithm in detail for filing
+4. **Decision**: Auto-addressing — patent vs. trade secret (depends on FTO outcome)
 
-### Budget Planning:
-**Week 5-8**: $5,000-10,000 (patent search + attorney setup)  
-**Week 8-18**: $40,000-68,000 (patent application filing)  
-**Total Phase 1**: $45,000-78,000 IP investment  
+**Critical**: Do not spend $12K-20K filing Patent #2 until the Schneider FTO analysis is complete.
 
 ---
 
-## Next Actions (Week 6):
-
-1. **Patent attorney engagement** - Interview 3+ firms specializing in ag-tech
-2. **Prior art search** - Professional patent search for all 4 innovations
-3. **Technical documentation** - Detailed specifications for patent applications  
-4. **Filing strategy** - US-first vs. PCT international filing decision
-5. **Budget approval** - Secure IP investment approval from both partners
-
-**Critical Milestone**: Patent applications initiated by Week 8 to maintain priority
+*IP Strategy Version 2.0*  
+*Revised: March 19, 2026*
