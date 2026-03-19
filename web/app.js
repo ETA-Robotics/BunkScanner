@@ -1522,6 +1522,68 @@
     initCalDrag();
   }
 
+  function initViewControls() {
+    // Toggle pen outlines
+    document.getElementById('toggleOutlines').addEventListener('click', () => {
+      state.viewSettings.penOutlines = !state.viewSettings.penOutlines;
+      updateViewControlButtons();
+      rebuildOverlay();
+    });
+
+    // Toggle background image
+    document.getElementById('toggleBackground').addEventListener('click', () => {
+      state.viewSettings.showBackground = !state.viewSettings.showBackground;
+      updateViewControlButtons();
+      applyBackgroundSetting();
+    });
+
+    // Save changes
+    document.getElementById('saveChanges').addEventListener('click', () => {
+      saveViewSettings();
+      showSaveIndicator();
+    });
+
+    // Initialize button states
+    updateViewControlButtons();
+    applyBackgroundSetting();
+  }
+
+  function updateViewControlButtons() {
+    const outlineBtn = document.getElementById('toggleOutlines');
+    const backgroundBtn = document.getElementById('toggleBackground');
+    
+    if (state.viewSettings.penOutlines) {
+      outlineBtn.classList.add('map-control__btn--active');
+    } else {
+      outlineBtn.classList.remove('map-control__btn--active');
+    }
+    
+    if (state.viewSettings.showBackground) {
+      backgroundBtn.classList.add('map-control__btn--active');
+    } else {
+      backgroundBtn.classList.remove('map-control__btn--active');
+    }
+  }
+
+  function applyBackgroundSetting() {
+    const img = document.getElementById('mapBg');
+    if (state.viewSettings.showBackground) {
+      img.classList.remove('map-bg--hidden');
+    } else {
+      img.classList.add('map-bg--hidden');
+    }
+  }
+
+  function showSaveIndicator() {
+    const saveBtn = document.getElementById('saveChanges');
+    saveBtn.classList.add('map-control__btn--saved');
+    
+    // Remove saved indicator after 2 seconds
+    setTimeout(() => {
+      saveBtn.classList.remove('map-control__btn--saved');
+    }, 2000);
+  }
+
   /* ----------------------------------------------------------
      INIT
      ---------------------------------------------------------- */
@@ -1548,6 +1610,7 @@
     initPanZoom();
     initMapInteraction();
     initControls();
+    initViewControls();
     initCalibration();
 
     // Start polling loop

@@ -1,78 +1,67 @@
 # BunkScanner
 
-A comprehensive feedlot bunk monitoring system designed for Barmount Feedlot operations. This web-based application provides real-time monitoring of feed levels across multiple pen sections using Arduino Opta hardware integration.
+Real-time feedlot bunk monitoring system with web-based dashboard for feed level tracking across multiple pen sections. Integrates with Arduino Opta hardware for industrial IoT data collection.
 
-## 🎯 Purpose
+## Overview
 
-BunkScanner enables feedlot operators to:
-- Monitor feed levels across all pen sections in real-time
-- Identify low feed conditions before they impact livestock
-- Track feeding patterns and consumption rates
-- Reduce manual inspection requirements
-- Optimize feed distribution timing
+BunkScanner provides:
+- Real-time feed level monitoring across all pen sections
+- Early detection of low feed conditions
+- Feed consumption tracking and analytics
+- Reduced manual inspection requirements
+- Optimized feed distribution scheduling
 
-## 🏗️ System Architecture
+## System Architecture
 
-### Hardware Components
-- **Arduino Opta**: Industrial IoT gateway for sensor data collection
-- **Ultrasonic Sensors**: 4 sensors per 2.4m segment for accurate feed level measurement
-- **WFLBT02 Bunks**: Standard 430mm depth feed bunks
+### Hardware
+- Arduino Opta industrial IoT gateway
+- Ultrasonic sensors (4 per 2.4m segment)
+- WFLBT02 standard bunks (430mm depth)
 
-### Software Components
-- **Web Interface**: Real-time dashboard with SVG-based feedlot layout visualization
-- **Data Processing**: Feed level calculations and alert generation
-- **Mock Data Generator**: Development and testing simulation system
+### Software
+- Web dashboard with SVG layout visualization
+- Real-time data processing and alerts
+- Development simulation environment
 
-## 📊 Monitoring Coverage
+## Monitoring Coverage
 
 The system monitors three main feedlot sections:
 
-### D Side
-- **8 Pens**: D1 through D8
-- **Total Length**: 280 meters
-- **Coverage**: Complete feed bunk monitoring
+**D Side**: 8 pens (D1-D8), 280m total length  
+**C Side**: 15 pens (C1-C15), 515m total length  
+**B Side**: 20 pens (B1-B20), 500m total length
 
-### C Side  
-- **15 Pens**: C1 through C15
-- **Total Length**: 515 meters
-- **Coverage**: Extended pen section monitoring
+## Features
 
-### B Side
-- **20 Pens**: B1 through B20  
-- **Total Length**: 500 meters
-- **Coverage**: High-density pen monitoring
+- Live feed level visualization with status indicators
+- Low feed condition alerts and notifications
+- Feed level trends and consumption analytics
+- Interactive pen segment inspection
+- Mobile-responsive interface
+- 30-second data polling intervals
 
-## 🚀 Features
+## Technical Specifications
 
-- **Real-time Dashboard**: Live feed level visualization with color-coded status indicators
-- **Alert System**: Immediate notifications for low feed conditions
-- **Historical Data**: Feed level trends and consumption patterns
-- **Interactive Layout**: Click-to-inspect individual pen segments
-- **Mobile Responsive**: Access monitoring data from any device
-- **Automatic Updates**: 30-second polling interval for current data
+- Segment length: 2.4m per monitored section
+- Sensor density: 4 ultrasonic sensors per segment  
+- Bunk depth: 430mm internal (WFLBT02)
+- Update frequency: 30-second polling
+- Layout resolution: 2990 × 1290 pixels
 
-## 🛠️ Technical Specifications
+## Installation
 
-- **Segment Length**: 2.4 meters per monitored section
-- **Sensor Density**: 4 ultrasonic sensors per segment
-- **Bunk Specifications**: 430mm internal depth (WFLBT02 standard)
-- **Update Frequency**: 30-second polling cycle
-- **Layout Resolution**: 2990 × 1290 pixel precision mapping
-
-## 🔧 Installation & Setup
-
-### Prerequisites
+### Requirements
 - Web server (Apache/Nginx)
-- Network connectivity to Arduino Opta hardware
-- Modern web browser with SVG support
+- Network access to Arduino Opta
+- SVG-compatible web browser
 
-### Deployment
-1. Clone this repository to your web server directory
-2. Configure Arduino Opta with appropriate network settings
-3. Update API endpoints in `web/app.js` for your hardware configuration
-4. Access the web interface through your server's URL
+### Setup
+1. Deploy repository to web server
+2. Configure Arduino Opta network settings
+3. Update API endpoints in `web/app.js`
+4. Access web interface via server URL
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 BunkScanner/
@@ -87,31 +76,30 @@ BunkScanner/
     └── feedlot-layout-crop.jpg         # Cropped layout for UI overlay
 ```
 
-## 🔍 Usage
+## Usage
 
-1. **Open Dashboard**: Navigate to the web interface
-2. **Monitor Status**: View real-time feed levels with color indicators
-3. **Review Alerts**: Check notification panel for low feed warnings  
-4. **Inspect Segments**: Click individual pen sections for detailed readings
-5. **Track Trends**: Monitor consumption patterns over time
+1. Access web dashboard
+2. Monitor real-time feed levels via color indicators
+3. Review alert notifications for low feed conditions
+4. Click pen sections for detailed sensor readings
+5. Track consumption trends and patterns
 
-## 🎨 Interface Elements
+## Interface
 
-- **Green Segments**: Adequate feed levels (>70%)
-- **Yellow Segments**: Moderate feed levels (30-70%)  
-- **Red Segments**: Low feed requiring attention (<30%)
-- **Alert Counter**: Dashboard summary of active low-feed conditions
-- **Connection Status**: Real-time hardware connectivity indicator
+- Green: Adequate feed levels (>70%)
+- Yellow: Moderate feed levels (30-70%)
+- Red: Low feed requiring attention (<30%)
+- Alert counter shows active low-feed conditions
+- Connection indicator displays hardware status
 
-## 🔒 Security & Privacy
+## License & Privacy
 
-This system contains proprietary feedlot operational data and monitoring algorithms. Access is restricted to authorized Barmount Feedlot personnel and approved evaluation partners under the terms of the Private ETA License.
+Proprietary system containing operational data and monitoring algorithms. Access restricted to authorized personnel and approved evaluation partners under Private ETA License terms.
 
-## 📞 Support
+## Support
 
-For technical support, configuration assistance, or operational questions, contact the Barmount Feedlot technical team.
+Contact ETA Engineering Technologies Australia for technical support and configuration assistance.
 
 ---
 
-**BunkScanner** — Optimizing feedlot operations through intelligent monitoring  
-© 2026 Barmount Feedlot. All rights reserved.
+© 2026 ETA Engineering Technologies Australia. All rights reserved.
