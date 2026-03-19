@@ -49,7 +49,7 @@
     C: {
       label: 'C Side',
       totalLength: 515,
-      y: 515,
+      y: 463,
       bunkH: 16,
       labelPos: { x: 200, y: 505 },
       pens: [
@@ -73,7 +73,7 @@
     B: {
       label: 'B Side',
       totalLength: 500,
-      y: 990,
+      y: 939,
       bunkH: 16,
       labelPos: { x: 200, y: 980 },
       pens: [
@@ -196,7 +196,7 @@
   function createReferenceOutlines() {
     const referenceOutlines = [];
 
-    // Create FULL pen areas (not just bunk lines) - pens extend much further back from bunks
+    // FULL PEN AREAS - More accurate pen depths and positioning
     for (const [sideKey, sideLayout] of Object.entries(LAYOUT)) {
       const sideColor = {
         'D': '#e74c3c', // Red
@@ -205,25 +205,26 @@
         'Z': '#f39c12'  // Orange
       }[sideKey];
 
-      // Full pen areas - pens are much larger than just the bunk strips
+      // Pen depths vary by side based on typical feedlot design
       const penDepth = {
-        'D': 120, // D side pens extend upward
-        'C': 180, // C side pens extend downward  
-        'B': 150, // B side pens extend upward
-        'Z': 120  // Z side pens extend downward
+        'D': 140, // D side pens extend north (upward)
+        'C': 200, // C side pens extend south (downward)  
+        'B': 160, // B side pens extend north (upward)
+        'Z': 130  // Z side pens extend south (downward)
       }[sideKey];
 
-      const penDirection = (sideKey === 'D' || sideKey === 'B') ? -1 : 1; // Up or down from bunk
+      const penDirection = (sideKey === 'D' || sideKey === 'B') ? -1 : 1; // Direction from bunk
 
       sideLayout.pens.forEach((pen, index) => {
+        // Full pen outline
         const penOutline = {
           id: `ref-pen-${pen.id}`,
           points: [
-            { x: pen.x - 5, y: sideLayout.y },
-            { x: pen.x + pen.w + 5, y: sideLayout.y },
-            { x: pen.x + pen.w + 5, y: sideLayout.y + (penDepth * penDirection) },
-            { x: pen.x - 5, y: sideLayout.y + (penDepth * penDirection) },
-            { x: pen.x - 5, y: sideLayout.y }
+            { x: pen.x, y: sideLayout.y },
+            { x: pen.x + pen.w, y: sideLayout.y },
+            { x: pen.x + pen.w, y: sideLayout.y + sideLayout.bunkH + (penDepth * penDirection) },
+            { x: pen.x, y: sideLayout.y + sideLayout.bunkH + (penDepth * penDirection) },
+            { x: pen.x, y: sideLayout.y }
           ],
           isReference: true,
           color: sideColor,
@@ -231,263 +232,283 @@
           type: 'pen'
         };
         referenceOutlines.push(penOutline);
+
+        // Pen divider fences between adjacent pens
+        if (index < sideLayout.pens.length - 1) {
+          const fenceOutline = {
+            id: `ref-fence-${pen.id}-${sideLayout.pens[index + 1].id}`,
+            points: [
+              { x: pen.x + pen.w, y: sideLayout.y },
+              { x: pen.x + pen.w, y: sideLayout.y + sideLayout.bunkH + (penDepth * penDirection) },
+              { x: pen.x + pen.w + 2, y: sideLayout.y + sideLayout.bunkH + (penDepth * penDirection) },
+              { x: pen.x + pen.w + 2, y: sideLayout.y },
+              { x: pen.x + pen.w, y: sideLayout.y }
+            ],
+            isReference: true,
+            color: '#34495e',
+            label: '',
+            type: 'fence'
+          };
+          referenceOutlines.push(fenceOutline);
+        }
       });
     }
 
-    // ROAD SYSTEM - comprehensive road network
+    // MAIN ROADS (based on actual layout)
     const roadOutlines = [
-      // Main east-west road (top)
+      // Main truck haul road - shown prominently in layout
       {
-        id: 'ref-main-road-north',
+        id: 'ref-truck-haul-road', 
         points: [
-          { x: 50, y: 300 },
-          { x: 2900, y: 300 },
-          { x: 2900, y: 330 },
-          { x: 50, y: 330 },
-          { x: 50, y: 300 }
+          { x: 280, y: 320 }, { x: 2350, y: 320 }, { x: 2350, y: 360 }, { x: 280, y: 360 }, { x: 280, y: 320 }
         ],
         isReference: true,
-        color: '#7f8c8d',
-        label: 'Main North Road',
-        type: 'road'
-      },
-      // Feed alley between D and C sides
-      {
-        id: 'ref-feed-alley-dc',
-        points: [
-          { x: 280, y: 441 },
-          { x: 1420, y: 441 },
-          { x: 1420, y: 499 },
-          { x: 280, y: 499 },
-          { x: 280, y: 441 }
-        ],
-        isReference: true,
-        color: '#95a5a6',
-        label: 'Feed Alley D-C',
-        type: 'road'
-      },
-      // Central service road between C and B
-      {
-        id: 'ref-central-road',
-        points: [
-          { x: 250, y: 700 },
-          { x: 2400, y: 700 },
-          { x: 2400, y: 750 },
-          { x: 250, y: 750 },
-          { x: 250, y: 700 }
-        ],
-        isReference: true,
-        color: '#7f8c8d',
-        label: 'Central Service Road',
-        type: 'road'
-      },
-      // Feed alley between B and Z sides
-      {
-        id: 'ref-feed-alley-bz',
-        points: [
-          { x: 340, y: 1006 },
-          { x: 2350, y: 1006 },
-          { x: 2350, y: 1034 },
-          { x: 340, y: 1034 },
-          { x: 340, y: 1034 }
-        ],
-        isReference: true,
-        color: '#95a5a6',
-        label: 'Feed Alley B-Z',
-        type: 'road'
-      },
-      // Main south road
-      {
-        id: 'ref-main-road-south',
-        points: [
-          { x: 300, y: 1190 },
-          { x: 2400, y: 1190 },
-          { x: 2400, y: 1220 },
-          { x: 300, y: 1220 },
-          { x: 300, y: 1190 }
-        ],
-        isReference: true,
-        color: '#7f8c8d',
-        label: 'Main South Road',
+        color: '#2c3e50',
+        label: 'TRUCK HAUL ROAD',
         type: 'road'
       },
       // Perimeter access roads
       {
         id: 'ref-perimeter-north',
         points: [
-          { x: 280, y: 280 },
-          { x: 1420, y: 280 },
-          { x: 1420, y: 300 },
-          { x: 280, y: 300 },
-          { x: 280, y: 280 }
+          { x: 50, y: 280 }, { x: 2400, y: 280 }, { x: 2400, y: 310 }, { x: 50, y: 310 }, { x: 50, y: 280 }
         ],
         isReference: true,
         color: '#bdc3c7',
         label: 'Perimeter North',
         type: 'road'
       },
+      // Feed truck roads between pen rows
       {
-        id: 'ref-perimeter-south',
+        id: 'ref-feed-road-dc',
         points: [
-          { x: 300, y: 1180 },
-          { x: 2400, y: 1180 },
-          { x: 2400, y: 1190 },
-          { x: 300, y: 1190 },
-          { x: 300, y: 1180 }
+          { x: 297, y: 461 }, { x: 2328, y: 461 }, { x: 2328, y: 479 }, { x: 297, y: 479 }, { x: 297, y: 461 }
         ],
         isReference: true,
-        color: '#bdc3c7',
-        label: 'Perimeter South',
+        color: '#95a5a6',
+        label: 'Feed Road D-C',
+        type: 'road'
+      },
+      {
+        id: 'ref-feed-road-bz',
+        points: [
+          { x: 340, y: 1006 }, { x: 2350, y: 1006 }, { x: 2350, y: 1034 }, { x: 340, y: 1034 }, { x: 340, y: 1006 }
+        ],
+        isReference: true,
+        color: '#95a5a6',
+        label: 'Feed Road B-Z',
+        type: 'road'
+      },
+      // Central service road
+      {
+        id: 'ref-central-road',
+        points: [
+          { x: 250, y: 735 }, { x: 2450, y: 735 }, { x: 2450, y: 795 }, { x: 250, y: 795 }, { x: 250, y: 735 }
+        ],
+        isReference: true,
+        color: '#7f8c8d',
+        label: 'Central Road',
         type: 'road'
       }
     ];
 
-    // FACILITY BUILDINGS
+    // DETAILED FACILITY BUILDINGS
     const facilityOutlines = [
-      // Feed mill complex
+      // Feed mill complex (detailed)
       {
         id: 'ref-feed-mill-main',
         points: [
-          { x: 50, y: 50 },
-          { x: 200, y: 50 },
-          { x: 200, y: 200 },
-          { x: 50, y: 200 },
-          { x: 50, y: 50 }
+          { x: 60, y: 60 }, { x: 160, y: 60 }, { x: 160, y: 150 }, { x: 60, y: 150 }, { x: 60, y: 60 }
         ],
         isReference: true,
         color: '#8e44ad',
         label: 'Feed Mill',
-        type: 'facility'
+        type: 'building'
       },
-      // Feed storage silos
+      // Feed storage silos (multiple)
       {
-        id: 'ref-silos',
+        id: 'ref-silo-1',
         points: [
-          { x: 200, y: 80 },
-          { x: 280, y: 80 },
-          { x: 280, y: 170 },
-          { x: 200, y: 170 },
-          { x: 200, y: 80 }
+          { x: 170, y: 70 }, { x: 200, y: 70 }, { x: 200, y: 100 }, { x: 170, y: 100 }, { x: 170, y: 70 }
         ],
         isReference: true,
         color: '#9b59b6',
-        label: 'Silos',
-        type: 'facility'
+        label: 'Silo 1',
+        type: 'building'
       },
-      // Office/admin building
       {
-        id: 'ref-office',
+        id: 'ref-silo-2',
         points: [
-          { x: 50, y: 200 },
-          { x: 150, y: 200 },
-          { x: 150, y: 270 },
-          { x: 50, y: 270 },
-          { x: 50, y: 200 }
+          { x: 210, y: 70 }, { x: 240, y: 70 }, { x: 240, y: 100 }, { x: 210, y: 100 }, { x: 210, y: 70 }
+        ],
+        isReference: true,
+        color: '#9b59b6',
+        label: 'Silo 2',
+        type: 'building'
+      },
+      // Office complex
+      {
+        id: 'ref-office-main',
+        points: [
+          { x: 60, y: 160 }, { x: 140, y: 160 }, { x: 140, y: 200 }, { x: 60, y: 200 }, { x: 60, y: 160 }
         ],
         isReference: true,
         color: '#e67e22',
         label: 'Office',
-        type: 'facility'
+        type: 'building'
       },
-      // Maintenance shop
+      // Equipment/maintenance shed 
       {
-        id: 'ref-maintenance',
+        id: 'ref-maintenance-shed',
         points: [
-          { x: 150, y: 200 },
-          { x: 280, y: 200 },
-          { x: 280, y: 270 },
-          { x: 150, y: 270 },
-          { x: 150, y: 200 }
+          { x: 60, y: 160 }, { x: 180, y: 160 }, { x: 180, y: 220 }, { x: 60, y: 220 }, { x: 60, y: 160 }
         ],
         isReference: true,
         color: '#d35400',
-        label: 'Maintenance',
-        type: 'facility'
+        label: 'Maintenance Shed',
+        type: 'building'
       },
-      // Loading/scale area
+      // Feed storage shed
       {
-        id: 'ref-scale-loading',
+        id: 'ref-feed-storage-shed',
         points: [
-          { x: 2450, y: 200 },
-          { x: 2600, y: 200 },
-          { x: 2600, y: 350 },
-          { x: 2450, y: 350 },
-          { x: 2450, y: 200 }
+          { x: 150, y: 230 }, { x: 250, y: 230 }, { x: 250, y: 270 }, { x: 150, y: 270 }, { x: 150, y: 230 }
+        ],
+        isReference: true,
+        color: '#8d6e63',
+        label: 'Feed Storage',
+        type: 'building'
+      },
+      // Scale house (near truck haul road)
+      {
+        id: 'ref-scale-house',
+        points: [
+          { x: 2350, y: 300 }, { x: 2400, y: 300 }, { x: 2400, y: 330 }, { x: 2350, y: 330 }, { x: 2350, y: 300 }
         ],
         isReference: true,
         color: '#16a085',
-        label: 'Scale/Loading',
-        type: 'facility'
-      }
-    ];
-
-    // WATER INFRASTRUCTURE
-    const waterOutlines = [
-      // Main water treatment facility
-      {
-        id: 'ref-water-treatment',
-        points: [
-          { x: 2500, y: 400 },
-          { x: 2650, y: 400 },
-          { x: 2650, y: 550 },
-          { x: 2500, y: 550 },
-          { x: 2500, y: 400 }
-        ],
-        isReference: true,
-        color: '#3498db',
-        label: 'Water Treatment',
-        type: 'water'
-      },
-      // Storage tanks (large)
-      {
-        id: 'ref-storage-tanks-1',
-        points: [
-          { x: 2650, y: 400 },
-          { x: 2750, y: 400 },
-          { x: 2750, y: 500 },
-          { x: 2650, y: 500 },
-          { x: 2650, y: 400 }
-        ],
-        isReference: true,
-        color: '#2980b9',
-        label: 'Storage Tanks 1',
-        type: 'water'
+        label: 'Scale House',
+        type: 'building'
       },
       {
-        id: 'ref-storage-tanks-2',
+        id: 'ref-truck-scales',
         points: [
-          { x: 2650, y: 500 },
-          { x: 2750, y: 500 },
-          { x: 2750, y: 600 },
-          { x: 2650, y: 600 },
-          { x: 2650, y: 500 }
-        ],
-        isReference: true,
-        color: '#2980b9',
-        label: 'Storage Tanks 2',
-        type: 'water'
-      },
-      // Wastewater lagoon
-      {
-        id: 'ref-lagoon',
-        points: [
-          { x: 2400, y: 1000 },
-          { x: 2700, y: 1000 },
-          { x: 2700, y: 1200 },
-          { x: 2400, y: 1200 },
-          { x: 2400, y: 1000 }
+          { x: 2420, y: 230 }, { x: 2530, y: 230 }, { x: 2530, y: 250 }, { x: 2420, y: 250 }, { x: 2420, y: 230 }
         ],
         isReference: true,
         color: '#1abc9c',
-        label: 'Lagoon',
+        label: 'Truck Scales',
+        type: 'infrastructure'
+      },
+      // Cattle handling facilities
+      {
+        id: 'ref-chutes-1',
+        points: [
+          { x: 2450, y: 400 }, { x: 2550, y: 400 }, { x: 2550, y: 500 }, { x: 2450, y: 500 }, { x: 2450, y: 400 }
+        ],
+        isReference: true,
+        color: '#c0392b',
+        label: 'Loading Chutes',
+        type: 'infrastructure'
+      },
+      {
+        id: 'ref-working-pens',
+        points: [
+          { x: 2450, y: 500 }, { x: 2600, y: 500 }, { x: 2600, y: 650 }, { x: 2450, y: 650 }, { x: 2450, y: 500 }
+        ],
+        isReference: true,
+        color: '#e74c3c',
+        label: 'Working Pens',
+        type: 'infrastructure'
+      }
+    ];
+
+    // WATER & WASTE SYSTEMS
+    const waterOutlines = [
+      // Water wells
+      {
+        id: 'ref-well-1',
+        points: [
+          { x: 2650, y: 300 }, { x: 2680, y: 300 }, { x: 2680, y: 330 }, { x: 2650, y: 330 }, { x: 2650, y: 300 }
+        ],
+        isReference: true,
+        color: '#3498db',
+        label: 'Well 1',
+        type: 'water'
+      },
+      // Water storage tanks (positioned as shown in upper left area near C1)
+      {
+        id: 'ref-water-tank-1',
+        points: [
+          { x: 1450, y: 350 }, { x: 1500, y: 350 }, { x: 1500, y: 400 }, { x: 1450, y: 400 }, { x: 1450, y: 350 }
+        ],
+        isReference: true,
+        color: '#2980b9',
+        label: 'Water Tank 1',
+        type: 'water'
+      },
+      {
+        id: 'ref-water-tank-2',
+        points: [
+          { x: 1510, y: 350 }, { x: 1560, y: 350 }, { x: 1560, y: 400 }, { x: 1510, y: 400 }, { x: 1510, y: 350 }
+        ],
+        isReference: true,
+        color: '#2980b9',
+        label: 'Water Tank 2',
+        type: 'water'
+      },
+      // Distribution system
+      {
+        id: 'ref-water-distribution',
+        points: [
+          { x: 2600, y: 400 }, { x: 2700, y: 400 }, { x: 2700, y: 450 }, { x: 2600, y: 450 }, { x: 2600, y: 400 }
+        ],
+        isReference: true,
+        color: '#5dade2',
+        label: 'Water Distribution',
         type: 'water'
       }
     ];
 
-    // Add all outline categories
-    referenceOutlines.push(...roadOutlines);
-    referenceOutlines.push(...facilityOutlines);
-    referenceOutlines.push(...waterOutlines);
+    // ADDITIONAL INFRASTRUCTURE
+    const additionalOutlines = [
+      // Equipment storage
+      {
+        id: 'ref-equipment-storage',
+        points: [
+          { x: 60, y: 210 }, { x: 180, y: 210 }, { x: 180, y: 270 }, { x: 60, y: 270 }, { x: 60, y: 210 }
+        ],
+        isReference: true,
+        color: '#795548',
+        label: 'Equipment Storage',
+        type: 'building'
+      },
+      // Feed commodity storage
+      {
+        id: 'ref-commodity-storage',
+        points: [
+          { x: 190, y: 210 }, { x: 280, y: 210 }, { x: 280, y: 270 }, { x: 190, y: 270 }, { x: 190, y: 210 }
+        ],
+        isReference: true,
+        color: '#8d6e63',
+        label: 'Commodity Storage',
+        type: 'building'
+      },
+      // Electrical infrastructure
+      {
+        id: 'ref-electrical',
+        points: [
+          { x: 2750, y: 300 }, { x: 2780, y: 300 }, { x: 2780, y: 350 }, { x: 2750, y: 350 }, { x: 2750, y: 300 }
+        ],
+        isReference: true,
+        color: '#f39c12',
+        label: 'Electrical',
+        type: 'infrastructure'
+      }
+    ];
+
+    // Combine all reference elements
+    referenceOutlines.push(...roadOutlines, ...facilityOutlines, ...waterOutlines, ...additionalOutlines);
     
     return referenceOutlines;
   }

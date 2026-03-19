@@ -1383,3 +1383,61 @@ button, select, input {
 
   .site-header { background: #fff; color: #000; border-bottom: 2px solid #000; }
 }
+
+
+/* ============================================================
+   Error Handler — Toast Notifications & Connection Indicator
+   ============================================================ */
+
+/* ── Toast ── */
+.bunk-toast {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(1rem);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-inverse);
+  background: var(--text);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 9999;
+  max-width: 90vw;
+  pointer-events: auto;
+}
+.bunk-toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.bunk-toast--error   { background: var(--alert-urgent); }
+.bunk-toast--warn    { background: var(--alert-warning); }
+.bunk-toast--success { background: var(--fill-target); }
+.bunk-toast--info    { background: var(--alert-info); }
+
+.bunk-toast__icon { font-size: 1.1rem; flex-shrink: 0; }
+.bunk-toast__message { flex: 1; }
+.bunk-toast__close {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 0.25rem;
+  opacity: 0.75;
+}
+.bunk-toast__close:hover { opacity: 1; }
+
+/* ── Timestamp staleness ── */
+.timestamp--warn  { color: var(--alert-warning); }
+.timestamp--stale { color: var(--alert-urgent); animation: pulse-stale 2s ease-in-out infinite; }
+
+@keyframes pulse-stale {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}

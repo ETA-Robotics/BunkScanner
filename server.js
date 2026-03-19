@@ -13,13 +13,33 @@
 
 const express = require('express');
 const path = require('path');
+const {
+  logger,
+  validateBusPayload,
+  BusHealthMonitor,
+  requestLogger,
+  jsonParseErrorHandler,
+  globalErrorHandler,
+  apiNotFoundHandler,
+  setupProcessHandlers,
+  VALID_BUSES,
+} = require('./lib/errorHandler');
+
 const app = express();
 
 const PORT = process.env.PORT || 3000;
 const MAX_BODY_SIZE = '1mb';
 
+/* ══════════════════════════════════════════════════════
+   MIDDLEWARE
+   ══════════════════════════════════════════════════════ */
+
+app.use(requestLogger);
 app.use(express.json({ limit: MAX_BODY_SIZE }));
+app.use(jsonParseErrorHandler);
 app.use(express.static(path.join(__dirname, 'web')));
+
+const healthMonitor = new BusHealthMonitor();
 
 /* ══════════════════════════════════════════════════════
    IN-MEMORY DATA STORE
@@ -39,14 +59,11 @@ const busHealth = {};
 app.post('/api/bus/data', (req, res) => {
     const payload = req.body;
 
-    if (!payload || !payload.busId || !payload.nodes) {
-        return res.status(400).json({ error: 'Invalid payload: requires busId and nodes' });
-    }
-
-    // Validate busId against known buses
-    const validBuses = ['BUS-D', 'BUS-C1', 'BUS-C2', 'BUS-B1', 'BUS-B2', 'BUS-Z1', 'BUS-Z2'];
-    if (!validBuses.includes(payload.busId)) {
-        return res.status(400).json({ error: 'Unknown busId: ' + payload.busId });
+    try {
+        validateBusPayload(payload);
+    } catch (err) {
+        logger.warn('BUS', `Invalid payload from ${req.ip}: ${err.message}`);
+        return res.status(err.statusCode || 400).json(err.toJSON ? err.toJSON() : { error: err.message });
     }
 
     // Store with server timestamp
@@ -62,7 +79,7 @@ app.post('/api/bus/data', (req, res) => {
         online: true,
     };
 
-    console.log(`[BUS] ${payload.busId}: ${payload.nodes.length} nodes received`);
+    logger.info('BUS', `${payload.busId}: ${payload.nodes.length} nodes received`);
     res.json({ status: 'ok', busId: payload.busId });
 });
 
@@ -105,11 +122,15 @@ app.get('/api/health', (_req, res) => {
         };
     }
 
+    // Include health monitor diagnostics
+    const diagnostics = healthMonitor.getHealthStatus(busHealth);
+
     res.json({
         timestamp: now,
         totalBuses: Object.keys(summary).length,
         expectedBuses: 7,
         buses: summary,
+        diagnostics,
     });
 });
 
@@ -120,9 +141,14 @@ app.get('/api/health', (_req, res) => {
 
 app.post('/api/bus/:busId/readdress', (req, res) => {
     const { busId } = req.params;
+
+    if (!VALID_BUSES.includes(busId)) {
+        return res.status(400).json({ error: { code: 'INVALID_BUS', message: `Unknown busId: ${busId}` } });
+    }
+
     // In production, this would send a command to the Opta gateway
     // For now, just clear the bus data to force a refresh
-    console.log(`[CMD] Re-address requested for ${busId}`);
+    logger.info('CMD', `Re-address requested for ${busId}`);
     res.json({ status: 'queued', busId: busId });
 });
 
@@ -130,23 +156,42 @@ app.post('/api/bus/:busId/readdress', (req, res) => {
    STATIC FALLBACK — Serve index.html for SPA routes
    ══════════════════════════════════════════════════════ */
 
+app.use(apiNotFoundHandler);
+
 app.get('*', (_req, res) => {
     res.sendFile(path.join(__dirname, 'web', 'index.html'));
 });
 
 /* ══════════════════════════════════════════════════════
-   START SERVER
+   GLOBAL ERROR HANDLER (must be last middleware)
    ══════════════════════════════════════════════════════ */
 
-app.listen(PORT, () => {
-    console.log('==============================');
-    console.log('BunkScanner Server');
-    console.log(`Listening on port ${PORT}`);
-    console.log('==============================');
-    console.log('Endpoints:');
-    console.log(`  POST /api/bus/data      — Receive Opta gateway data`);
-    console.log(`  GET  /api/site          — Aggregated site data for dashboard`);
-    console.log(`  GET  /api/health        — Bus health summary`);
-    console.log(`  POST /api/bus/:id/readdress — Trigger re-addressing`);
-    console.log('==============================');
-});
+app.use(globalErrorHandler);
+
+/* ══════════════════════════════════════════════════════
+   START SERVER (only when run directly)
+   ══════════════════════════════════════════════════════ */
+
+if (require.main === module) {
+    setupProcessHandlers();
+
+    app.listen(PORT, () => {
+        logger.info('SERVER', 'BunkScanner Server started', { port: PORT });
+        console.log('==============================');
+        console.log('BunkScanner Server');
+        console.log(`Listening on port ${PORT}`);
+        console.log('==============================');
+        console.log('Endpoints:');
+        console.log(`  POST /api/bus/data      — Receive Opta gateway data`);
+        console.log(`  GET  /api/site          — Aggregated site data for dashboard`);
+        console.log(`  GET  /api/health        — Bus health summary`);
+        console.log(`  POST /api/bus/:id/readdress — Trigger re-addressing`);
+        console.log('==============================');
+    });
+}
+
+/* ══════════════════════════════════════════════════════
+   EXPORTS (for testing)
+   ══════════════════════════════════════════════════════ */
+
+module.exports = { app, busData, busHealth, healthMonitor };
