@@ -238,7 +238,7 @@ button, select, input {
   position: relative;
   overflow: hidden;
   cursor: grab;
-  background: #3b4a3a;
+  background: #e8e6dd;
 }
 
 .map-wrap:active { cursor: grabbing; }
@@ -963,6 +963,180 @@ button, select, input {
 .btn-secondary:hover {
   background: var(--hover);
   color: var(--text);
+}
+
+/* ============================================================
+   CALIBRATION PANEL
+   ============================================================ */
+.cal-panel {
+  position: fixed;
+  top: var(--header-h);
+  right: 0;
+  width: 340px;
+  bottom: 0;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  z-index: 250;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform var(--t-norm);
+}
+.cal-panel--open { transform: translateX(0); }
+
+.cal-panel__header {
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-alt);
+  flex-shrink: 0;
+}
+.cal-panel__title { font-weight: 700; font-size: var(--fs-md); }
+.cal-panel__close {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border-radius: var(--radius);
+  font-size: var(--fs-md); color: var(--text-muted);
+}
+.cal-panel__close:hover { background: var(--hover); color: var(--text); }
+
+.cal-panel__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-3) var(--sp-4);
+}
+
+.cal-hint {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  margin-bottom: var(--sp-4);
+  line-height: 1.5;
+}
+
+.cal-side {
+  margin-bottom: var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.cal-side__header {
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface-alt);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cal-side__header:hover { background: var(--hover); }
+
+.cal-side__body {
+  padding: var(--sp-2) var(--sp-3);
+  display: none;
+}
+.cal-side--expanded .cal-side__body { display: block; }
+
+.cal-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-1);
+}
+.cal-row__label {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  min-width: 55px;
+}
+.cal-row__input {
+  width: 60px;
+  height: 24px;
+  padding: 0 var(--sp-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  background: var(--surface-alt);
+}
+.cal-row__input:focus {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -1px;
+}
+.cal-row__nudge {
+  width: 20px; height: 20px;
+  font-size: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+.cal-row__nudge:hover { background: var(--hover); color: var(--text); }
+
+.cal-pens-grid {
+  margin-top: var(--sp-2);
+  max-height: 200px;
+  overflow-y: auto;
+}
+.cal-pen-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 1px 0;
+  font-size: var(--fs-xs);
+}
+.cal-pen-row__id {
+  min-width: 30px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.cal-pen-row input {
+  width: 50px;
+  height: 20px;
+  padding: 0 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  background: var(--surface-alt);
+}
+
+.cal-actions {
+  display: flex;
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+/* Calibration mode SVG handles */
+.cal-handle {
+  fill: rgba(42, 100, 150, 0.3);
+  stroke: var(--focus-ring);
+  stroke-width: 2;
+  cursor: ns-resize;
+}
+.cal-handle:hover { fill: rgba(42, 100, 150, 0.5); }
+
+.cal-edge {
+  fill: transparent;
+  stroke: rgba(42, 100, 150, 0.6);
+  stroke-width: 3;
+  stroke-dasharray: 6 3;
+  cursor: ew-resize;
+}
+.cal-edge:hover { stroke: var(--selected); stroke-width: 4; }
+
+/* Highlight active side bunk row during calibration */
+.bunk-seg--cal-active {
+  stroke: var(--focus-ring) !important;
+  stroke-width: 2 !important;
+  opacity: 1 !important;
 }
 
 /* ============================================================

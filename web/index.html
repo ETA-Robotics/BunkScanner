@@ -235,6 +235,23 @@
 
     <div class="ctrl-group">
       <button class="ctrl-btn" id="ctrlSettings" title="Threshold settings">&#9881; Thresholds</button>
+      <button class="ctrl-btn" id="ctrlCalibrate" title="Calibrate bunk overlay positions">&#9783; Calibrate</button>
+    </div>
+  </div>
+
+  <!-- ========== CALIBRATION PANEL ========== -->
+  <div class="cal-panel" id="calPanel">
+    <div class="cal-panel__header">
+      <span class="cal-panel__title">Bunk Calibration</span>
+      <button class="cal-panel__close" id="calClose">&#10005;</button>
+    </div>
+    <div class="cal-panel__body">
+      <p class="cal-hint">Drag bunk rows up/down and pen edges left/right on the map, or use the controls below. Arrow keys nudge selected side by 1px.</p>
+      <div id="calSides"></div>
+      <div class="cal-actions">
+        <button class="btn-primary" id="calExport">Copy Layout Code</button>
+        <button class="btn-secondary" id="calReset">Reset</button>
+      </div>
     </div>
   </div>
 
