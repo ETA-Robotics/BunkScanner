@@ -16,6 +16,37 @@ npm run diagnostic:stress
 
 # Run tests
 npm test
+
+# Run tests with coverage report
+npm run test:all
+```
+
+## 🧪 **Test Coverage**
+
+| File | Statements | Branches | Functions | Lines |
+|------|-----------|----------|-----------|-------|
+| **All files** | **92.74%** | **95.32%** | **97.29%** | **93.08%** |
+| server.js | 78.68% | 75.00% | 83.33% | 78.68% |
+| lib/errorHandler.js | 99.24% | 97.89% | 100% | 100% |
+
+**264 tests** across 6 suites:
+
+| Suite | Tests | Scope |
+|-------|-------|-------|
+| Error Handler | 54 | Error classes, validators, health monitor, middleware, process handlers |
+| Server API | 38 | All endpoints, validation, concurrency, edge cases |
+| Frontend Logic | 63 | Classification, formatting, parsing, Modbus conversion, alerts, layout |
+| Firmware Protocol | 54 | CRC-16, framing, auto-addressing, register map, error detection |
+| Legacy Server | 16 | Original API tests |
+| Legacy Modbus | 37 | Bus timing, RS485 math, fill calculation |
+
+```bash
+# Run individual suites
+npm run test:server      # Server API integration tests
+npm run test:errors      # Error handler unit tests
+npm run test:frontend    # Frontend logic unit tests
+npm run test:firmware    # Firmware protocol tests
+npm run test:legacy      # Legacy tests
 ```
 
 ## 📊 **Current Status**

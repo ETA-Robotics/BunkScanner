@@ -17,6 +17,11 @@ const {
   STALE_THRESHOLD_MS,
   CRITICAL_THRESHOLD_MS,
   logger,
+  requestLogger,
+  jsonParseErrorHandler,
+  globalErrorHandler,
+  apiNotFoundHandler,
+  setupProcessHandlers,
 } = require('../lib/errorHandler');
 
 /* ══════════════════════════════════════════════════════
@@ -353,5 +358,245 @@ describe('Logger', () => {
     logger.warn('TEST', 'warning');
     expect(spy).toHaveBeenCalled();
     spy.mockRestore();
+  });
+
+  test('debug returns undefined when log level is info (default)', () => {
+    // Default LOG_LEVEL is 'info', so debug messages are filtered out
+    const spy = jest.spyOn(console, 'debug').mockImplementation();
+    const entry = logger.debug('TEST', 'debug msg', { detail: 1 });
+    expect(entry).toBeUndefined();
+    spy.mockRestore();
+  });
+});
+
+/* ══════════════════════════════════════════════════════
+   HEALTH MONITOR — DEGRADED STATUS
+   ══════════════════════════════════════════════════════ */
+
+describe('BusHealthMonitor degraded status', () => {
+  let monitor;
+
+  beforeEach(() => {
+    monitor = new BusHealthMonitor();
+  });
+
+  test('reports degraded when error rate > 5', () => {
+    // Populate error log with enough spread-out entries to produce rate > 5
+    const now = Date.now();
+    monitor.errorLog['BUS-D'] = [];
+    for (let i = 0; i < 60; i++) {
+      monitor.errorLog['BUS-D'].push({ timestamp: now - (60000 - i * 1000), error: `err${i}` });
+    }
+    const busHealth = {
+      'BUS-D': { lastSeen: now, nodeCount: 10, online: true },
+    };
+    const statuses = monitor.getHealthStatus(busHealth);
+    expect(statuses['BUS-D'].status).toBe('degraded');
+    expect(statuses['BUS-D'].level).toBe('warn');
+  });
+});
+
+/* ══════════════════════════════════════════════════════
+   EXPRESS MIDDLEWARE
+   ══════════════════════════════════════════════════════ */
+
+describe('requestLogger middleware', () => {
+  test('calls next and logs on response end', () => {
+    const spy = jest.spyOn(console, 'log').mockImplementation();
+    const req = { method: 'GET', path: '/api/test' };
+    const originalEnd = jest.fn();
+    const res = { statusCode: 200, end: originalEnd };
+    const next = jest.fn();
+
+    requestLogger(req, res, next);
+    expect(next).toHaveBeenCalled();
+
+    // Simulate response ending
+    res.end('body');
+    expect(originalEnd).toHaveBeenCalledWith('body');
+    spy.mockRestore();
+  });
+});
+
+describe('jsonParseErrorHandler', () => {
+  test('handles entity.parse.failed', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation();
+    const err = { type: 'entity.parse.failed' };
+    const req = {};
+    const jsonFn = jest.fn();
+    const res = { status: jest.fn(() => ({ json: jsonFn })) };
+    const next = jest.fn();
+
+    jsonParseErrorHandler(err, req, res, next);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(jsonFn).toHaveBeenCalledWith(expect.objectContaining({
+      error: expect.objectContaining({ code: 'INVALID_JSON' }),
+    }));
+    expect(next).not.toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  test('handles entity.too.large', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation();
+    const err = { type: 'entity.too.large' };
+    const req = {};
+    const jsonFn = jest.fn();
+    const res = { status: jest.fn(() => ({ json: jsonFn })) };
+    const next = jest.fn();
+
+    jsonParseErrorHandler(err, req, res, next);
+    expect(res.status).toHaveBeenCalledWith(413);
+    expect(next).not.toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  test('passes unrelated errors to next', () => {
+    const err = { type: 'something.else' };
+    const req = {};
+    const res = {};
+    const next = jest.fn();
+
+    jsonParseErrorHandler(err, req, res, next);
+    expect(next).toHaveBeenCalledWith(err);
+  });
+});
+
+describe('globalErrorHandler', () => {
+  test('handles AppError instances', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation();
+    const err = new ValidationError('bad input', ['detail1']);
+    const req = {};
+    const jsonFn = jest.fn();
+    const res = { status: jest.fn(() => ({ json: jsonFn })) };
+    const next = jest.fn();
+
+    globalErrorHandler(err, req, res, next);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(jsonFn).toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  test('handles unexpected errors with 500', () => {
+    const spy = jest.spyOn(console, 'error').mockImplementation();
+    const err = new Error('unexpected crash');
+    const req = {};
+    const jsonFn = jest.fn();
+    const res = { status: jest.fn(() => ({ json: jsonFn })) };
+    const next = jest.fn();
+
+    globalErrorHandler(err, req, res, next);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(jsonFn).toHaveBeenCalledWith(expect.objectContaining({
+      error: expect.objectContaining({ code: 'INTERNAL_ERROR' }),
+    }));
+    spy.mockRestore();
+  });
+});
+
+describe('apiNotFoundHandler', () => {
+  test('returns 404 for /api/ paths', () => {
+    const req = { path: '/api/unknown', method: 'GET' };
+    const jsonFn = jest.fn();
+    const res = { status: jest.fn(() => ({ json: jsonFn })) };
+    const next = jest.fn();
+
+    apiNotFoundHandler(req, res, next);
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  test('calls next for non-API paths', () => {
+    const req = { path: '/dashboard', method: 'GET' };
+    const res = {};
+    const next = jest.fn();
+
+    apiNotFoundHandler(req, res, next);
+    expect(next).toHaveBeenCalled();
+  });
+});
+
+/* ══════════════════════════════════════════════════════
+   PROCESS HANDLERS
+   ══════════════════════════════════════════════════════ */
+
+describe('setupProcessHandlers', () => {
+  let listeners;
+
+  beforeEach(() => {
+    listeners = {};
+    jest.spyOn(process, 'on').mockImplementation((event, handler) => {
+      listeners[event] = handler;
+    });
+  });
+
+  afterEach(() => {
+    process.on.mockRestore();
+  });
+
+  test('registers all expected handlers', () => {
+    setupProcessHandlers();
+    expect(process.on).toHaveBeenCalledWith('uncaughtException', expect.any(Function));
+    expect(process.on).toHaveBeenCalledWith('unhandledRejection', expect.any(Function));
+    expect(process.on).toHaveBeenCalledWith('SIGTERM', expect.any(Function));
+    expect(process.on).toHaveBeenCalledWith('SIGINT', expect.any(Function));
+  });
+
+  test('uncaughtException handler logs error', () => {
+    jest.useFakeTimers();
+    const errSpy = jest.spyOn(console, 'error').mockImplementation();
+    const exitSpy = jest.spyOn(process, 'exit').mockImplementation();
+    setupProcessHandlers();
+
+    const err = new Error('test crash');
+    listeners.uncaughtException(err);
+    expect(errSpy).toHaveBeenCalled();
+
+    // Advance timers to trigger the delayed process.exit
+    jest.advanceTimersByTime(1100);
+    expect(exitSpy).toHaveBeenCalledWith(1);
+
+    jest.useRealTimers();
+    errSpy.mockRestore();
+    exitSpy.mockRestore();
+  });
+
+  test('unhandledRejection handler logs with Error reason', () => {
+    const errSpy = jest.spyOn(console, 'error').mockImplementation();
+    setupProcessHandlers();
+
+    listeners.unhandledRejection(new Error('promise fail'));
+    expect(errSpy).toHaveBeenCalled();
+    errSpy.mockRestore();
+  });
+
+  test('unhandledRejection handler logs with string reason', () => {
+    const errSpy = jest.spyOn(console, 'error').mockImplementation();
+    setupProcessHandlers();
+
+    listeners.unhandledRejection('string reason');
+    expect(errSpy).toHaveBeenCalled();
+    errSpy.mockRestore();
+  });
+
+  test('SIGTERM handler calls process.exit(0)', () => {
+    const logSpy = jest.spyOn(console, 'log').mockImplementation();
+    const exitSpy = jest.spyOn(process, 'exit').mockImplementation();
+    setupProcessHandlers();
+
+    listeners.SIGTERM();
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    logSpy.mockRestore();
+    exitSpy.mockRestore();
+  });
+
+  test('SIGINT handler calls process.exit(0)', () => {
+    const logSpy = jest.spyOn(console, 'log').mockImplementation();
+    const exitSpy = jest.spyOn(process, 'exit').mockImplementation();
+    setupProcessHandlers();
+
+    listeners.SIGINT();
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    logSpy.mockRestore();
+    exitSpy.mockRestore();
   });
 });

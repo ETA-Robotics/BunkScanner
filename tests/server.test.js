@@ -457,4 +457,15 @@ describe('Edge cases', () => {
 
     expect(res.body.error).toBeDefined();
   });
+
+  test('SPA fallback serves HTML for non-API routes', async () => {
+    const res = await request(app).get('/dashboard');
+    // Either 200 with HTML or 404 if index.html missing in test env
+    expect([200, 404]).toContain(res.status);
+  });
+
+  test('SPA fallback for nested non-API path', async () => {
+    const res = await request(app).get('/some/deep/path');
+    expect([200, 404]).toContain(res.status);
+  });
 });

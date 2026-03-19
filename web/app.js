@@ -32,7 +32,7 @@
     D: {
       label: 'D Side',
       totalLength: 280,
-      y: 425,
+      y: 461,
       bunkH: 16,
       labelPos: { x: 200, y: 415 },
       pens: [
@@ -49,7 +49,7 @@
     C: {
       label: 'C Side',
       totalLength: 515,
-      y: 463,
+      y: 479,
       bunkH: 16,
       labelPos: { x: 200, y: 505 },
       pens: [
@@ -827,7 +827,18 @@
           const seg = pen.segments[si];
           const rect = document.createElementNS(svgNS, 'rect');
           rect.setAttribute('x', penLayout.x + si * segW);
-          rect.setAttribute('y', sideLayout.y);
+          
+          // Position sensor readings: bottom of C row, top of B and D rows
+          let sensorY;
+          if (sideKey === 'C') {
+            // Bottom of C row
+            sensorY = sideLayout.y + sideLayout.bunkH + 200;
+          } else {
+            // Top of D and B rows (and any other rows)
+            sensorY = sideLayout.y;
+          }
+          rect.setAttribute('y', sensorY);
+          
           rect.setAttribute('width', segW);
           rect.setAttribute('height', sideLayout.bunkH);
           rect.setAttribute('rx', 1);
