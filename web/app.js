@@ -831,10 +831,16 @@
           // Position sensor readings: bottom of C row, top of B and D rows
           let sensorY;
           if (sideKey === 'C') {
-            // Bottom of C row
+            // Bottom of C row (far end of pens)
             sensorY = sideLayout.y + sideLayout.bunkH + 200;
+          } else if (sideKey === 'D') {
+            // Top of D row (far end of pens - they extend upward)
+            sensorY = sideLayout.y + sideLayout.bunkH - 140;
+          } else if (sideKey === 'B') {
+            // Top of B row (far end of pens - they extend upward)  
+            sensorY = sideLayout.y + sideLayout.bunkH - 160;
           } else {
-            // Top of D and B rows (and any other rows)
+            // Default for any other rows
             sensorY = sideLayout.y;
           }
           rect.setAttribute('y', sensorY);
