@@ -395,6 +395,83 @@ button, select, input {
   color: var(--text);
 }
 
+/* --- Map controls --- */
+.map-controls {
+  position: absolute;
+  top: var(--sp-3);
+  right: calc(var(--sp-3) + 44px); /* Position left of zoom controls */
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  z-index: 20;
+}
+
+.map-control__btn {
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  user-select: none;
+  backdrop-filter: blur(4px);
+  transition: all var(--t-fast);
+}
+
+.map-control__btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.map-control__btn:first-child {
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.map-control__btn:last-child {
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+.map-control__btn:not(:first-child) {
+  border-top: none;
+}
+
+.map-control__btn:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.map-control__btn--active {
+  background: var(--selected-bg);
+  color: var(--selected);
+  border-color: var(--selected);
+}
+
+/* --- Pen outlines --- */
+.pen-group--outlined {
+  stroke: var(--text);
+  stroke-width: 2;
+  stroke-dasharray: none;
+}
+
+.pen-group--outlined .bunk-seg {
+  stroke: var(--text);
+  stroke-width: 1.5;
+}
+
+/* --- Background toggle --- */
+.map-bg--hidden {
+  opacity: 0;
+}
+
+/* --- Save indicator --- */
+.map-control__btn--saved {
+  background: var(--fill-target-bg);
+  color: var(--fill-target);
+  border-color: var(--fill-target);
+}
+
 /* --- Tooltip --- */
 .map-tooltip {
   position: fixed;

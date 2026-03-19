@@ -138,6 +138,7 @@
     isPanning: false,
     panStart: { x: 0, y: 0 },
     notes: loadNotes(),
+    viewSettings: loadViewSettings(),
   };
 
   function loadThresholds() {
@@ -162,6 +163,18 @@
 
   function saveNotes() {
     localStorage.setItem('bunkscanner_notes', JSON.stringify(state.notes));
+  }
+
+  function loadViewSettings() {
+    try {
+      const s = localStorage.getItem('bunkscanner_view_settings');
+      if (s) return JSON.parse(s);
+    } catch (_) {}
+    return { penOutlines: false, showBackground: true };
+  }
+
+  function saveViewSettings() {
+    localStorage.setItem('bunkscanner_view_settings', JSON.stringify(state.viewSettings));
   }
 
   /* ----------------------------------------------------------
@@ -446,6 +459,23 @@
         const penGroup = document.createElementNS(svgNS, 'g');
         penGroup.classList.add('pen-group');
         penGroup.dataset.pen = pen.id;
+
+        // Add pen outline if enabled
+        if (state.viewSettings.penOutlines) {
+          const penOutline = document.createElementNS(svgNS, 'rect');
+          penOutline.setAttribute('x', penLayout.x - 2);
+          penOutline.setAttribute('y', sideLayout.y - 2);
+          penOutline.setAttribute('width', penLayout.w + 4);
+          penOutline.setAttribute('height', sideLayout.bunkH + 4);
+          penOutline.setAttribute('rx', 3);
+          penOutline.classList.add('pen-outline');
+          penOutline.style.fill = 'none';
+          penOutline.style.stroke = 'var(--text)';
+          penOutline.style.strokeWidth = '2';
+          penOutline.style.strokeDasharray = '5,3';
+          penOutline.style.opacity = '0.7';
+          penGroup.appendChild(penOutline);
+        }
 
         // Pen label
         const penLabel = document.createElementNS(svgNS, 'text');
