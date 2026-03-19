@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BunkScanner — Barmount Feedlot</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="site-header">
+    <span class="site-header__title">
+      BunkScanner
+      <span class="site-header__subtitle">Barmount Feedlot</span>
+    </span>
+    <div class="site-header__spacer"></div>
+    <div class="site-header__meta">
+      <span id="headerTimestamp">--:--</span>
+      <span class="status-dot status-dot--ok" id="connDot" title="Connection OK"></span>
+    </div>
+  </header>
+
+  <!-- ========== SUMMARY BAR ========== -->
+  <div class="summary-bar">
+    <div class="summary-item">
+      <svg class="summary-item__icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="14" height="10" rx="1"/><line x1="6" y1="4" x2="6" y2="14"/><line x1="12" y1="4" x2="12" y2="14"/></svg>
+      <span class="summary-item__value tabular-nums" id="sumPens">--</span>
+      <span class="summary-item__label">Pens</span>
+    </div>
+    <div class="summary-sep"></div>
+    <div class="summary-item">
+      <svg class="summary-item__icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="14" height="8" rx="1"/><path d="M5 6V4a4 4 0 018 0v2"/></svg>
+      <span class="summary-item__value tabular-nums" id="sumSegments">--</span>
+      <span class="summary-item__label">Segments</span>
+    </div>
+    <div class="summary-sep"></div>
+    <div class="summary-item summary-item--alert">
+      <svg class="summary-item__icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2l7 13H2L9 2z"/><line x1="9" y1="7" x2="9" y2="10"/><circle cx="9" cy="12.5" r="0.5" fill="currentColor"/></svg>
+      <span class="summary-item__value tabular-nums" id="sumAlerts">--</span>
+      <span class="summary-item__label">Alerts</span>
+    </div>
+    <div class="summary-sep"></div>
+    <div class="summary-item summary-item--warn">
+      <svg class="summary-item__icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="12" height="6" rx="1"/><path d="M5 8V6" stroke-dasharray="2 1"/><line x1="7" y1="11" x2="13" y2="11"/></svg>
+      <span class="summary-item__value tabular-nums" id="sumLow">--</span>
+      <span class="summary-item__label">Low Feed</span>
+    </div>
+    <div class="summary-sep"></div>
+    <div class="summary-item">
+      <svg class="summary-item__icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="6"/><path d="M9 5v4l3 2"/></svg>
+      <span class="summary-item__value tabular-nums" id="sumFaults">--</span>
+      <span class="summary-item__label">Faults</span>
+    </div>
+  </div>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <div class="main-content">
+
+    <!-- Map area -->
+    <div class="map-wrap" id="mapWrap">
+      <div class="map-inner" id="mapInner">
+        <img src="feedlot-layout.jpg" class="map-bg" id="mapBg" alt="Barmount Feedlot Layout" draggable="false">
+        <svg class="map-svg" id="mapSvg" xmlns="http://www.w3.org/2000/svg">
+          <!-- Dynamically populated by app.js -->
+        </svg>
+      </div>
+
+      <!-- Zoom controls -->
+      <div class="map-zoom">
+        <button class="map-zoom__btn" id="zoomIn" title="Zoom in">+</button>
+        <button class="map-zoom__btn" id="zoomOut" title="Zoom out">−</button>
+      </div>
+
+      <!-- Legend -->
+      <div class="map-legend" id="mapLegend">
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--fill-empty)"></div>Empty</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--fill-low)"></div>Low</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--fill-target)"></div>Target</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--fill-high)"></div>High</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--fill-inconsistent)"></div>Uneven</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--fill-fault)"></div>Fault</div>
+      </div>
+    </div>
+
+    <!-- Tooltip (positioned via JS) -->
+    <div class="map-tooltip" id="mapTooltip">
+      <div class="map-tooltip__row"><span>Pen</span> <span class="map-tooltip__val" id="ttPen">--</span></div>
+      <div class="map-tooltip__row"><span>Seg</span> <span class="map-tooltip__val" id="ttSeg">--</span></div>
+      <div class="map-tooltip__row"><span>Fill</span> <span class="map-tooltip__val" id="ttFill">--</span></div>
+      <div class="map-tooltip__row"><span>Updated</span> <span class="map-tooltip__val" id="ttTime">--</span></div>
+    </div>
+
+    <!-- ========== DETAIL PANEL ========== -->
+    <aside class="detail-panel" id="detailPanel">
+      <div class="detail-panel__header">
+        <span class="detail-panel__pen-name" id="dpPenName">--</span>
+        <span class="detail-panel__side-badge" id="dpSideBadge">--</span>
+        <div class="detail-panel__nav">
+          <button class="detail-panel__nav-btn" id="dpPrev" title="Previous pen">&#9664;</button>
+          <button class="detail-panel__nav-btn" id="dpNext" title="Next pen">&#9654;</button>
+        </div>
+        <button class="detail-panel__close" id="dpClose" title="Close (Esc)">&#10005;</button>
+      </div>
+
+      <div class="detail-panel__body" id="dpBody">
+        <!-- Stats row -->
+        <div class="detail-section">
+          <div class="detail-section__title">Bunk Summary</div>
+          <div class="detail-stats">
+            <div class="detail-stat">
+              <div class="detail-stat__value" id="dpAvgFill">--</div>
+              <div class="detail-stat__label">Avg Fill</div>
+            </div>
+            <div class="detail-stat">
+              <div class="detail-stat__value" id="dpMinMax">--</div>
+              <div class="detail-stat__label">Min / Max</div>
+            </div>
+            <div class="detail-stat">
+              <div class="detail-stat__value" id="dpHealth">--</div>
+              <div class="detail-stat__label">Health</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fill profile strip -->
+        <div class="detail-section">
+          <div class="detail-section__title">Fill Profile</div>
+          <div class="fill-profile" id="dpFillProfile">
+            <!-- Segment blocks injected by JS -->
+          </div>
+        </div>
+
+        <!-- Segment list -->
+        <div class="detail-section">
+          <div class="detail-section__title">Segments (2.4m)</div>
+          <div class="seg-list" id="dpSegList">
+            <!-- Segment cards injected by JS -->
+          </div>
+        </div>
+
+        <!-- Trend -->
+        <div class="detail-section">
+          <div class="detail-section__title">Trend (24h)</div>
+          <div class="trend-container">
+            <canvas class="trend-canvas" id="dpTrendCanvas"></canvas>
+            <div class="trend-labels" id="dpTrendLabels"></div>
+          </div>
+        </div>
+
+        <!-- Alerts -->
+        <div class="detail-section">
+          <div class="detail-section__title">Alerts</div>
+          <div class="alert-list" id="dpAlerts">
+            <div class="alert-row">
+              <div class="alert-dot"></div>
+              <span class="alert-row__text">No active alerts</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timestamps -->
+        <div class="detail-section">
+          <div class="meta-row">
+            <span class="meta-row__label">Last update</span>
+            <span class="tabular-nums" id="dpLastUpdate">--</span>
+          </div>
+          <div class="meta-row" style="margin-top:4px">
+            <span class="meta-row__label">Last feed event</span>
+            <span class="tabular-nums" id="dpLastFeed">--</span>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="detail-section">
+          <div class="detail-section__title">Notes</div>
+          <textarea class="notes-textarea" id="dpNotes" placeholder="Maintenance notes, observations…"></textarea>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- ========== CONTROL BAR ========== -->
+  <div class="control-bar">
+    <div class="ctrl-group">
+      <span class="ctrl-group__label">View</span>
+      <button class="ctrl-btn ctrl-btn--active" data-view="site">Site</button>
+      <button class="ctrl-btn" data-view="side">Side</button>
+      <button class="ctrl-btn" data-view="pen">Pen</button>
+    </div>
+
+    <div class="ctrl-sep"></div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-group__label">Side</span>
+      <button class="side-chip side-chip--active" data-side="all">All</button>
+      <button class="side-chip" data-side="D">D</button>
+      <button class="side-chip" data-side="C">C</button>
+      <button class="side-chip" data-side="B">B</button>
+      <button class="side-chip" data-side="Z">Z</button>
+    </div>
+
+    <div class="ctrl-sep"></div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-group__label">Agg</span>
+      <select class="ctrl-select" id="ctrlAgg">
+        <option value="average">Average</option>
+        <option value="worst">Worst-case</option>
+        <option value="confidence">Confidence</option>
+      </select>
+    </div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-group__label">Window</span>
+      <select class="ctrl-select" id="ctrlWindow">
+        <option value="live">Live</option>
+        <option value="lastfeed">Last Feed</option>
+        <option value="24h">24h</option>
+        <option value="7d">7d</option>
+      </select>
+    </div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-group__label">Density</span>
+      <select class="ctrl-select" id="ctrlDensity">
+        <option value="overview">Overview</option>
+        <option value="standard" selected>Standard</option>
+        <option value="detail">Engineering</option>
+      </select>
+    </div>
+
+    <div class="ctrl-sep"></div>
+
+    <div class="ctrl-group">
+      <button class="ctrl-btn" id="ctrlSettings" title="Threshold settings">&#9881; Thresholds</button>
+    </div>
+  </div>
+
+  <!-- ========== SETTINGS OVERLAY ========== -->
+  <div class="settings-overlay" id="settingsOverlay">
+    <div class="settings-box">
+      <div class="settings-box__title">Threshold Settings</div>
+
+      <div class="setting-row">
+        <span class="setting-row__label">Empty below (%)</span>
+        <input class="setting-row__input" type="number" id="threshEmpty" min="0" max="100" value="10">
+      </div>
+      <div class="setting-row">
+        <span class="setting-row__label">Low below (%)</span>
+        <input class="setting-row__input" type="number" id="threshLow" min="0" max="100" value="30">
+      </div>
+      <div class="setting-row">
+        <span class="setting-row__label">Target up to (%)</span>
+        <input class="setting-row__input" type="number" id="threshTarget" min="0" max="100" value="75">
+      </div>
+      <div class="setting-row">
+        <span class="setting-row__label">High above (%)</span>
+        <input class="setting-row__input" type="number" id="threshHigh" min="0" max="100" value="75">
+      </div>
+      <div class="setting-row">
+        <span class="setting-row__label">Uneven variance (%)</span>
+        <input class="setting-row__input" type="number" id="threshVariance" min="0" max="100" value="25">
+      </div>
+
+      <div class="settings-box__actions">
+        <button class="btn-secondary" id="settingsCancel">Cancel</button>
+        <button class="btn-primary" id="settingsApply">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
