@@ -1,0 +1,13 @@
+{
+  "name": "bunkscanner-server",
+  "version": "1.0.0",
+  "description": "BunkScanner backend — receives Opta gateway data, serves web dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
