@@ -32,7 +32,7 @@
     D: {
       label: 'D Side',
       totalLength: 280,
-      y: 425,
+      y: 461,
       bunkH: 16,
       labelPos: { x: 200, y: 415 },
       pens: [
@@ -49,7 +49,7 @@
     C: {
       label: 'C Side',
       totalLength: 515,
-      y: 515,
+      y: 479,
       bunkH: 16,
       labelPos: { x: 200, y: 505 },
       pens: [
@@ -73,9 +73,9 @@
     B: {
       label: 'B Side',
       totalLength: 500,
-      y: 990,
+      y: 1010,
       bunkH: 16,
-      labelPos: { x: 200, y: 980 },
+      labelPos: { x: 200, y: 950 },
       pens: [
         { id: 'B20', x: 368,  w: 100 },
         { id: 'B19', x: 468,  w: 99 },
@@ -102,7 +102,7 @@
     Z: {
       label: 'Z Side',
       totalLength: 500,
-      y: 1050,
+      y:1027,
       bunkH: 16,
       labelPos: { x: 200, y: 1065 },
       pens: [
@@ -139,6 +139,10 @@
     panStart: { x: 0, y: 0 },
     notes: loadNotes(),
     viewSettings: loadViewSettings(),
+    customDrawings: loadCustomDrawings(),
+    referenceOutlines: createReferenceOutlines(),
+    isDrawing: false,
+    currentDrawing: null,
   };
 
   function loadThresholds() {
@@ -170,11 +174,286 @@
       const s = localStorage.getItem('bunkscanner_view_settings');
       if (s) return JSON.parse(s);
     } catch (_) {}
-    return { penOutlines: false, showBackground: true };
+    return { penOutlines: false, showBackground: true, drawingMode: false, showReferences: true };
   }
 
   function saveViewSettings() {
     localStorage.setItem('bunkscanner_view_settings', JSON.stringify(state.viewSettings));
+  }
+
+  function loadCustomDrawings() {
+    try {
+      const s = localStorage.getItem('bunkscanner_custom_drawings');
+      if (s) return JSON.parse(s);
+    } catch (_) {}
+    return [];
+  }
+
+  function saveCustomDrawings() {
+    localStorage.setItem('bunkscanner_custom_drawings', JSON.stringify(state.customDrawings));
+  }
+
+  function createReferenceOutlines() {
+    const referenceOutlines = [];
+
+    // FULL PEN AREAS - More accurate pen depths and positioning
+    for (const [sideKey, sideLayout] of Object.entries(LAYOUT)) {
+      const sideColor = {
+        'D': '#e74c3c', // Red
+        'C': '#3498db', // Blue 
+        'B': '#2ecc71', // Green
+        'Z': '#f39c12'  // Orange
+      }[sideKey];
+
+      // Pen depths vary by side based on typical feedlot design
+      const penDepth = {
+        'D': 270, // D side pens extend north (reduced height)
+        'C': 240, // C side pens extend south to central road
+        'B': 230, // B side pens extend north (upward)
+        'Z': 245  // Z side pens extend south (downward)
+      }[sideKey];
+
+      const penDirection = (sideKey === 'D' || sideKey === 'B') ? -1 : 1; // Direction from bunk
+
+      sideLayout.pens.forEach((pen, index) => {
+        // Full pen outline
+        const penOutline = {
+          id: `ref-pen-${pen.id}`,
+          points: [
+            { x: pen.x, y: sideLayout.y },
+            { x: pen.x + pen.w, y: sideLayout.y },
+            { x: pen.x + pen.w, y: sideLayout.y + sideLayout.bunkH + (penDepth * penDirection) },
+            { x: pen.x, y: sideLayout.y + sideLayout.bunkH + (penDepth * penDirection) },
+            { x: pen.x, y: sideLayout.y }
+          ],
+          isReference: true,
+          color: sideColor,
+          label: pen.id,
+          type: 'pen'
+        };
+        referenceOutlines.push(penOutline);
+
+        // Pen divider fences between adjacent pens
+        if (index < sideLayout.pens.length - 1) {
+          const fenceOutline = {
+            id: `ref-fence-${pen.id}-${sideLayout.pens[index + 1].id}`,
+            points: [
+              { x: pen.x + pen.w, y: sideLayout.y },
+              { x: pen.x + pen.w, y: sideLayout.y + sideLayout.bunkH + (penDepth * penDirection) },
+              { x: pen.x + pen.w + 2, y: sideLayout.y + sideLayout.bunkH + (penDepth * penDirection) },
+              { x: pen.x + pen.w + 2, y: sideLayout.y },
+              { x: pen.x + pen.w, y: sideLayout.y }
+            ],
+            isReference: true,
+            color: '#34495e',
+            label: '',
+            type: 'fence'
+          };
+          referenceOutlines.push(fenceOutline);
+        }
+      });
+    }
+
+    // MAIN ROADS (based on actual layout)
+    const roadOutlines = [
+      // Main truck haul road - shown prominently in layout
+      {
+        id: 'ref-truck-haul-road', 
+        points: [
+          { x: 280, y: 185 }, { x: 2350, y: 185 }, { x: 2350, y: 205 }, { x: 280, y: 205 }, { x: 280, y: 185 }
+        ],
+        isReference: true,
+        color: '#2c3e50',
+        label: 'TRUCK HAUL ROAD',
+        type: 'road'
+      },
+      // Feed truck roads between pen rows
+      {
+        id: 'ref-feed-road-dc',
+        points: [
+          { x: 297, y: 461 }, { x: 2328, y: 461 }, { x: 2328, y: 479 }, { x: 297, y: 479 }, { x: 297, y: 461 }
+        ],
+        isReference: true,
+        color: '#95a5a6',
+        label: 'Feed Road D-C',
+        type: 'road'
+      },
+      {
+        id: 'ref-feed-road-bz',
+        points: [
+          { x: 297, y: 1010 }, { x: 2328, y: 1010 }, { x: 2328, y: 1027 }, { x: 297, y: 1027 }, { x: 297, y: 1010 }
+        ],
+        isReference: true,
+        color: '#95a5a6',
+        label: 'Feed Road B-Z',
+        type: 'road'
+      },
+      // Central service road
+      {
+        id: 'ref-central-road',
+        points: [
+          { x: 250, y: 735 }, { x: 2450, y: 735 }, { x: 2450, y: 795 }, { x: 250, y: 795 }, { x: 250, y: 735 }
+        ],
+        isReference: true,
+        color: '#7f8c8d',
+        label: 'Central Road',
+        type: 'road'
+      }
+    ];
+
+    // DETAILED FACILITY BUILDINGS
+    const facilityOutlines = [
+      // Feed mill complex (detailed)
+      {
+        id: 'ref-feed-mill-main',
+        points: [
+          { x: 60, y: 60 }, { x: 160, y: 60 }, { x: 160, y: 150 }, { x: 60, y: 150 }, { x: 60, y: 60 }
+        ],
+        isReference: true,
+        color: '#8e44ad',
+        label: 'Feed Mill',
+        type: 'building'
+      },
+      // Feed storage silos (multiple)
+      {
+        id: 'ref-silo-1',
+        points: [
+          { x: 170, y: 70 }, { x: 200, y: 70 }, { x: 200, y: 100 }, { x: 170, y: 100 }, { x: 170, y: 70 }
+        ],
+        isReference: true,
+        color: '#9b59b6',
+        label: 'Silo 1',
+        type: 'building'
+      },
+      {
+        id: 'ref-silo-2',
+        points: [
+          { x: 210, y: 70 }, { x: 240, y: 70 }, { x: 240, y: 100 }, { x: 210, y: 100 }, { x: 210, y: 70 }
+        ],
+        isReference: true,
+        color: '#9b59b6',
+        label: 'Silo 2',
+        type: 'building'
+      },
+      // Office complex
+      {
+        id: 'ref-office-main',
+        points: [
+          { x: 60, y: 160 }, { x: 140, y: 160 }, { x: 140, y: 200 }, { x: 60, y: 200 }, { x: 60, y: 160 }
+        ],
+        isReference: true,
+        color: '#e67e22',
+        label: 'Office',
+        type: 'building'
+      },
+      // Equipment/maintenance shed 
+      {
+        id: 'ref-maintenance-shed',
+        points: [
+          { x: 60, y: 160 }, { x: 180, y: 160 }, { x: 180, y: 220 }, { x: 60, y: 220 }, { x: 60, y: 160 }
+        ],
+        isReference: true,
+        color: '#d35400',
+        label: 'Maintenance Shed',
+        type: 'building'
+      },
+      // Feed storage shed
+      {
+        id: 'ref-feed-storage-shed',
+        points: [
+          { x: 150, y: 230 }, { x: 250, y: 230 }, { x: 250, y: 270 }, { x: 150, y: 270 }, { x: 150, y: 230 }
+        ],
+        isReference: true,
+        color: '#8d6e63',
+        label: 'Feed Storage',
+        type: 'building'
+      },
+      // Scale house (near truck haul road)
+      {
+        id: 'ref-scale-house',
+        points: [
+          { x: 2350, y: 300 }, { x: 2400, y: 300 }, { x: 2400, y: 330 }, { x: 2350, y: 330 }, { x: 2350, y: 300 }
+        ],
+        isReference: true,
+        color: '#16a085',
+        label: 'Scale House',
+        type: 'building'
+      },
+      {
+        id: 'ref-truck-scales',
+        points: [
+          { x: 2420, y: 230 }, { x: 2530, y: 230 }, { x: 2530, y: 250 }, { x: 2420, y: 250 }, { x: 2420, y: 230 }
+        ],
+        isReference: true,
+        color: '#1abc9c',
+        label: 'Truck Scales',
+        type: 'infrastructure'
+      },
+      // Cattle handling facilities
+      {
+        id: 'ref-chutes-1',
+        points: [
+          { x: 2450, y: 400 }, { x: 2550, y: 400 }, { x: 2550, y: 500 }, { x: 2450, y: 500 }, { x: 2450, y: 400 }
+        ],
+        isReference: true,
+        color: '#c0392b',
+        label: 'Loading Chutes',
+        type: 'infrastructure'
+      },
+      {
+        id: 'ref-working-pens',
+        points: [
+          { x: 2450, y: 500 }, { x: 2600, y: 500 }, { x: 2600, y: 650 }, { x: 2450, y: 650 }, { x: 2450, y: 500 }
+        ],
+        isReference: true,
+        color: '#e74c3c',
+        label: 'Working Pens',
+        type: 'infrastructure'
+      }
+    ];
+
+
+    // ADDITIONAL INFRASTRUCTURE
+    const additionalOutlines = [
+      // Equipment storage
+      {
+        id: 'ref-equipment-storage',
+        points: [
+          { x: 60, y: 210 }, { x: 180, y: 210 }, { x: 180, y: 270 }, { x: 60, y: 270 }, { x: 60, y: 210 }
+        ],
+        isReference: true,
+        color: '#795548',
+        label: 'Equipment Storage',
+        type: 'building'
+      },
+      // Feed commodity storage
+      {
+        id: 'ref-commodity-storage',
+        points: [
+          { x: 190, y: 210 }, { x: 280, y: 210 }, { x: 280, y: 270 }, { x: 190, y: 270 }, { x: 190, y: 210 }
+        ],
+        isReference: true,
+        color: '#8d6e63',
+        label: 'Commodity Storage',
+        type: 'building'
+      },
+      // Electrical infrastructure
+      {
+        id: 'ref-electrical',
+        points: [
+          { x: 2750, y: 300 }, { x: 2780, y: 300 }, { x: 2780, y: 350 }, { x: 2750, y: 350 }, { x: 2750, y: 300 }
+        ],
+        isReference: true,
+        color: '#f39c12',
+        label: 'Electrical',
+        type: 'infrastructure'
+      }
+    ];
+
+    // Combine all reference elements
+      referenceOutlines.push(...roadOutlines, ...facilityOutlines, ...additionalOutlines);
+    
+    return referenceOutlines;
   }
 
   /* ----------------------------------------------------------
@@ -491,7 +770,24 @@
           const seg = pen.segments[si];
           const rect = document.createElementNS(svgNS, 'rect');
           rect.setAttribute('x', penLayout.x + si * segW);
-          rect.setAttribute('y', sideLayout.y);
+          
+          // Position sensor readings: within pen boundaries
+          let sensorY;
+          if (sideKey === 'C') {
+            // Bottom of C row (within pen area, near central road)
+            sensorY = sideLayout.y + sideLayout.bunkH + 220;
+          } else if (sideKey === 'D') {
+            // Top of D row (within pen area, near far end)
+            sensorY = sideLayout.y - 250;
+          } else if (sideKey === 'B') {
+            // Top of B row (within pen area, near far end)  
+            sensorY = sideLayout.y - 140;
+          } else {
+            // Default for any other rows
+            sensorY = sideLayout.y;
+          }
+          rect.setAttribute('y', sensorY);
+          
           rect.setAttribute('width', segW);
           rect.setAttribute('height', sideLayout.bunkH);
           rect.setAttribute('rx', 1);
@@ -512,6 +808,9 @@
 
       svg.appendChild(sideGroup);
     }
+
+    // Add custom drawings and reference outlines
+    renderCustomDrawings();
   }
 
   function updateSegmentColors() {
@@ -865,6 +1164,8 @@
     // Mouse pan
     wrap.addEventListener('mousedown', (e) => {
       if (e.button !== 0) return;
+      // Don't pan when in drawing mode
+      if (state.viewSettings.drawingMode) return;
       // Only pan if not clicking a segment
       if (e.target.classList.contains('bunk-seg')) return;
       state.isPanning = true;
@@ -891,6 +1192,8 @@
     wrap.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
         if (e.target.classList.contains('bunk-seg')) return;
+        // Don't pan when in drawing mode
+        if (state.viewSettings.drawingMode) return;
         state.isPanning = true;
         state.panStart = { x: e.touches[0].clientX - state.panX, y: e.touches[0].clientY - state.panY };
       }
@@ -1138,22 +1441,116 @@
   }
 
   /* ----------------------------------------------------------
-     API STUBS
-     Swap these with real fetch() calls to the Arduino Opta
+     API — Live data from Opta gateways via backend server
+     Falls back to mock data if server is unavailable.
      ---------------------------------------------------------- */
 
-  // TODO: Replace with fetch('/api/site')
+  const API_BASE = '';  // Same origin — set to 'http://host:port' if separate
+
+  // Bus-to-side mapping for merging Opta bus data into site structure
+  const BUS_SIDE_MAP = {
+    'BUS-D':  'D',
+    'BUS-C1': 'C', 'BUS-C2': 'C',
+    'BUS-B1': 'B', 'BUS-B2': 'B',
+    'BUS-Z1': 'Z', 'BUS-Z2': 'Z',
+  };
+
+  /**
+   * Merge a bus data payload from an Opta gateway into the site data model.
+   * Called when the backend receives a POST from a gateway and pushes via SSE,
+   * or when polling the aggregated endpoint.
+   */
+  function mergeBusData(busPayload) {
+    if (!state.site || !busPayload || !busPayload.nodes) return;
+    const sideKey = BUS_SIDE_MAP[busPayload.busId];
+    if (!sideKey || !state.site.sides[sideKey]) return;
+
+    const side = state.site.sides[sideKey];
+
+    for (const nodeData of busPayload.nodes) {
+      // nodeData.id = "D01-S05" → penId = "D1", segIdx = 4 (0-based)
+      const match = nodeData.id.match(/^([A-Z])(\d+)-S(\d+)$/);
+      if (!match) continue;
+
+      const penId = match[1] + parseInt(match[2], 10); // "D01" → "D1"
+      const segNum = parseInt(match[3], 10);            // 1-based
+      const segIdx = segNum - 1;
+
+      const pen = side.pens.find(p => p.id === penId);
+      if (!pen || segIdx < 0 || segIdx >= pen.segments.length) continue;
+
+      const seg = pen.segments[segIdx];
+
+      // Update sensor fill values (Modbus values are ×10, UI uses 0–100 float)
+      const camFills = [nodeData.cam1Fill, nodeData.cam2Fill, nodeData.cam3Fill, nodeData.cam4Fill];
+      for (let s = 0; s < SENSORS_PER_SEG && s < camFills.length; s++) {
+        const fillX10 = camFills[s];
+        if (fillX10 != null && fillX10 <= 1000) {
+          seg.sensors[s].fillPct = fillX10 / 10.0;
+          seg.sensors[s].rawMm = Math.round((seg.sensors[s].fillPct / 100) * BUNK_DEPTH_MM);
+          seg.sensors[s].health = (nodeData.status & (1 << s)) ? 'ok' : 'fault';
+          seg.sensors[s].lastUpdate = Date.now();
+        }
+      }
+
+      // Recalculate segment aggregates
+      const valid = seg.sensors.filter(s => s.fillPct !== null);
+      if (valid.length > 0) {
+        seg.fillPct = Math.round(
+          (valid.reduce((a, s) => a + s.fillPct, 0) / valid.length) * 10
+        ) / 10;
+        seg.variance = Math.round(
+          (Math.max(...valid.map(s => s.fillPct)) -
+           Math.min(...valid.map(s => s.fillPct))) * 10
+        ) / 10;
+      }
+      seg.confidence = nodeData.confidence > 75 ? 'high' :
+                       nodeData.confidence > 50 ? 'medium' : 'low';
+      seg.hasFault = (nodeData.status & 0x0F) !== 0x0F;
+    }
+
+    // Recalculate pen-level stats for affected side
+    for (const pen of side.pens) {
+      const fills = pen.segments.filter(s => s.fillPct !== null).map(s => s.fillPct);
+      if (fills.length) {
+        pen.avgFill = Math.round(fills.reduce((a, b) => a + b, 0) / fills.length);
+        pen.minFill = Math.round(Math.min(...fills));
+        pen.maxFill = Math.round(Math.max(...fills));
+      }
+      pen.lastUpdate = Date.now();
+      pen.alerts = generateAlerts(pen.id, pen.segments);
+    }
+
+    state.site.timestamp = Date.now();
+  }
+
+  /**
+   * Fetch aggregated site data from backend.
+   * Falls back to mock data if server unavailable.
+   */
   function fetchSiteData() {
+    if (API_BASE) {
+      return fetch(API_BASE + '/api/site')
+        .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(data => {
+          // If server returns bus data array, merge into existing site structure
+          if (Array.isArray(data.buses)) {
+            if (!state.site) state.site = generateSiteData();
+            data.buses.forEach(bus => mergeBusData(bus));
+            return state.site;
+          }
+          return data;
+        })
+        .catch(() => state.site || generateSiteData());
+    }
     return Promise.resolve(state.site || generateSiteData());
   }
 
-  // TODO: Replace with fetch('/api/pen/' + penId)
   function fetchPenDetail(penId) {
     const pen = findPen(penId);
     return Promise.resolve(pen);
   }
 
-  // TODO: Replace with fetch('/api/alerts')
   function fetchAlerts() {
     const all = [];
     if (!state.site) return Promise.resolve(all);
@@ -1166,7 +1563,6 @@
     return Promise.resolve(all);
   }
 
-  // TODO: Replace with fetch('/api/sensor/' + sensorId + '/history?window=' + window)
   function fetchSensorHistory(sensorId, timeWindow) {
     return Promise.resolve(generateTrend());
   }
@@ -1530,6 +1926,28 @@
       rebuildOverlay();
     });
 
+    // Toggle reference outlines
+    document.getElementById('toggleReferences').addEventListener('click', () => {
+      state.viewSettings.showReferences = !state.viewSettings.showReferences;
+      updateViewControlButtons();
+      renderCustomDrawings();
+    });
+
+    // Toggle drawing mode
+    document.getElementById('drawMode').addEventListener('click', () => {
+      state.viewSettings.drawingMode = !state.viewSettings.drawingMode;
+      updateViewControlButtons();
+      toggleDrawingMode();
+    });
+
+    // Clear all drawings
+    document.getElementById('clearDrawings').addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear all custom drawings?')) {
+        state.customDrawings = [];
+        renderCustomDrawings();
+      }
+    });
+
     // Toggle background image
     document.getElementById('toggleBackground').addEventListener('click', () => {
       state.viewSettings.showBackground = !state.viewSettings.showBackground;
@@ -1540,22 +1958,44 @@
     // Save changes
     document.getElementById('saveChanges').addEventListener('click', () => {
       saveViewSettings();
+      saveCustomDrawings();
       showSaveIndicator();
     });
 
     // Initialize button states
     updateViewControlButtons();
     applyBackgroundSetting();
+    initDrawingEvents();
+    
+    // Load and render any existing drawings
+    console.log('Loading', state.customDrawings.length, 'saved drawings');
+    if (state.customDrawings.length > 0 || state.referenceOutlines.length > 0) {
+      renderCustomDrawings();
+    }
   }
 
   function updateViewControlButtons() {
     const outlineBtn = document.getElementById('toggleOutlines');
+    const referenceBtn = document.getElementById('toggleReferences');
+    const drawBtn = document.getElementById('drawMode');
     const backgroundBtn = document.getElementById('toggleBackground');
     
     if (state.viewSettings.penOutlines) {
       outlineBtn.classList.add('map-control__btn--active');
     } else {
       outlineBtn.classList.remove('map-control__btn--active');
+    }
+    
+    if (state.viewSettings.showReferences) {
+      referenceBtn.classList.add('map-control__btn--active');
+    } else {
+      referenceBtn.classList.remove('map-control__btn--active');
+    }
+    
+    if (state.viewSettings.drawingMode) {
+      drawBtn.classList.add('map-control__btn--drawing');
+    } else {
+      drawBtn.classList.remove('map-control__btn--drawing');
     }
     
     if (state.viewSettings.showBackground) {
@@ -1582,6 +2022,293 @@
     setTimeout(() => {
       saveBtn.classList.remove('map-control__btn--saved');
     }, 2000);
+  }
+
+  function toggleDrawingMode() {
+    const mapWrap = document.getElementById('mapWrap');
+    
+    if (state.viewSettings.drawingMode) {
+      mapWrap.classList.add('drawing-cursor');
+      // Disable panning when drawing
+      state.drawingModeActive = true;
+      console.log('Drawing mode activated');
+    } else {
+      mapWrap.classList.remove('drawing-cursor');
+      state.drawingModeActive = false;
+      console.log('Drawing mode deactivated');
+      // Cancel any current drawing
+      if (state.currentDrawing) {
+        cancelCurrentDrawing();
+      }
+    }
+  }
+
+  function initDrawingEvents() {
+    const svg = document.getElementById('mapSvg');
+    
+    // Use single event handlers that check drawing mode
+    svg.addEventListener('mousedown', handleDrawingMouseDown, true);
+    svg.addEventListener('mousemove', handleDrawingMouseMove, true);
+    svg.addEventListener('mouseup', handleDrawingMouseUp, true);
+    
+    // Touch events for mobile
+    svg.addEventListener('touchstart', handleDrawingTouchStart, true);
+    svg.addEventListener('touchmove', handleDrawingTouchMove, true);
+    svg.addEventListener('touchend', handleDrawingTouchEnd, true);
+  }
+
+  function handleDrawingMouseDown(e) {
+    if (!state.viewSettings.drawingMode) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const point = getDrawingPoint(e);
+    state.isDrawing = true;
+    state.currentDrawing = {
+      id: Date.now().toString(),
+      points: [point],
+      element: null
+    };
+    
+    createDrawingPreview();
+  }
+
+  function handleDrawingMouseMove(e) {
+    if (!state.viewSettings.drawingMode || !state.isDrawing || !state.currentDrawing) return;
+    
+    e.preventDefault();
+    const point = getDrawingPoint(e);
+    state.currentDrawing.points.push(point);
+    updateDrawingPreview();
+  }
+
+  function handleDrawingMouseUp(e) {
+    if (!state.viewSettings.drawingMode || !state.isDrawing || !state.currentDrawing) return;
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    finishDrawing();
+    state.isDrawing = false;
+  }
+
+  function handleDrawingTouchStart(e) {
+    if (!state.viewSettings.drawingMode) return;
+    handleDrawingMouseDown(e);
+  }
+
+  function handleDrawingTouchMove(e) {
+    if (!state.viewSettings.drawingMode) return;
+    handleDrawingMouseMove(e);
+  }
+
+  function handleDrawingTouchEnd(e) {
+    if (!state.viewSettings.drawingMode) return;
+    handleDrawingMouseUp(e);
+  }
+
+  function getDrawingPoint(e) {
+    const svg = document.getElementById('mapSvg');
+    const pt = svg.createSVGPoint();
+    
+    if (e.touches && e.touches.length > 0) {
+      pt.x = e.touches[0].clientX;
+      pt.y = e.touches[0].clientY;
+    } else {
+      pt.x = e.clientX;
+      pt.y = e.clientY;
+    }
+    
+    const ctm = svg.getScreenCTM().inverse();
+    return pt.matrixTransform(ctm);
+  }
+
+  function createDrawingPreview() {
+    const svg = document.getElementById('mapSvg');
+    
+    // Remove any existing preview
+    const existingPreview = document.getElementById('drawing-preview');
+    if (existingPreview) existingPreview.remove();
+    
+    const path = document.createElementNS(svgNS, 'path');
+    path.classList.add('drawing-preview');
+    path.setAttribute('id', 'drawing-preview');
+    path.style.fill = 'none';
+    path.style.stroke = 'var(--alert-warning)';
+    path.style.strokeWidth = '2';
+    path.style.strokeDasharray = '4,2';
+    path.style.opacity = '0.6';
+    path.style.pointerEvents = 'none';
+    svg.appendChild(path);
+    state.currentDrawing.element = path;
+    
+    console.log('Created drawing preview');
+  }
+
+  function updateDrawingPreview() {
+    if (!state.currentDrawing || !state.currentDrawing.element) return;
+    
+    const pathData = pointsToPath(state.currentDrawing.points);
+    state.currentDrawing.element.setAttribute('d', pathData);
+  }
+
+  function finishDrawing() {
+    if (!state.currentDrawing || state.currentDrawing.points.length < 2) {
+      cancelCurrentDrawing();
+      return;
+    }
+    
+    // Remove preview
+    const preview = document.getElementById('drawing-preview');
+    if (preview) preview.remove();
+    
+    // Add to saved drawings
+    state.customDrawings.push({
+      id: state.currentDrawing.id,
+      points: [...state.currentDrawing.points], // Create a copy
+      timestamp: Date.now()
+    });
+    
+    // Render the final drawing
+    renderCustomDrawings();
+    
+    state.currentDrawing = null;
+    
+    console.log('Drawing finished, total drawings:', state.customDrawings.length);
+  }
+
+  function cancelCurrentDrawing() {
+    const preview = document.getElementById('drawing-preview');
+    if (preview) preview.remove();
+    state.currentDrawing = null;
+  }
+
+  function pointsToPath(points) {
+    if (!points || points.length === 0) {
+      console.log('No points provided for path');
+      return '';
+    }
+    
+    let path = `M ${points[0].x} ${points[0].y}`;
+    for (let i = 1; i < points.length; i++) {
+      path += ` L ${points[i].x} ${points[i].y}`;
+    }
+    
+    console.log('Generated path:', path, 'from', points.length, 'points');
+    return path;
+  }
+
+  function renderCustomDrawings() {
+    const svg = document.getElementById('mapSvg');
+    
+    // Remove existing drawings and references
+    const existingDrawings = svg.querySelectorAll('.custom-drawing, .reference-outline, .reference-label');
+    existingDrawings.forEach(d => d.remove());
+    
+    console.log('Rendering', state.customDrawings.length, 'custom drawings and', state.referenceOutlines.length, 'reference outlines');
+    
+    // Add reference outlines first (lower z-index) if enabled
+    if (state.viewSettings.showReferences) {
+      // Group references by type and render in order: roads, facilities, water, pens
+      const groupedOutlines = {
+        road: [],
+        facility: [],
+        water: [],
+        pen: []
+      };
+      
+      state.referenceOutlines.forEach(outline => {
+        if (groupedOutlines[outline.type]) {
+          groupedOutlines[outline.type].push(outline);
+        }
+      });
+      
+      // Render in order: roads first (bottom layer), then facilities, water, pens on top
+      [...groupedOutlines.road, ...groupedOutlines.facility, ...groupedOutlines.water, ...groupedOutlines.pen].forEach((outline, index) => {
+        const path = document.createElementNS(svgNS, 'path');
+        path.classList.add('reference-outline');
+        path.classList.add(`reference-${outline.type}`);
+        const pathData = pointsToPath(outline.points);
+        path.setAttribute('d', pathData);
+        path.setAttribute('data-outline-id', outline.id);
+        path.setAttribute('data-outline-type', outline.type);
+        
+        // Style reference outlines based on type
+        path.style.fill = outline.type === 'road' ? 'rgba(127, 140, 141, 0.3)' : 'none';
+        path.style.stroke = outline.color || '#666';
+        
+        switch (outline.type) {
+          case 'road':
+            path.style.strokeWidth = '2';
+            path.style.strokeDasharray = 'none';
+            path.style.opacity = '0.6';
+            break;
+          case 'facility':
+            path.style.strokeWidth = '3';
+            path.style.strokeDasharray = '8,4';
+            path.style.opacity = '0.7';
+            break;
+          case 'water':
+            path.style.strokeWidth = '3';
+            path.style.strokeDasharray = '6,2';
+            path.style.opacity = '0.7';
+            break;
+          case 'pen':
+            path.style.strokeWidth = '2';
+            path.style.strokeDasharray = '4,2';
+            path.style.opacity = '0.5';
+            break;
+          default:
+            path.style.strokeWidth = '2';
+            path.style.strokeDasharray = '6,3';
+            path.style.opacity = '0.4';
+        }
+        
+        path.style.pointerEvents = 'none';
+        svg.appendChild(path);
+        
+        // Add labels for reference outlines (exclude individual pen labels to avoid clutter)
+        if (outline.label && outline.type !== 'pen') {
+          const text = document.createElementNS(svgNS, 'text');
+          text.classList.add('reference-label');
+          text.classList.add(`reference-label-${outline.type}`);
+          const centerX = outline.points.reduce((sum, p) => sum + p.x, 0) / outline.points.length;
+          const centerY = outline.points.reduce((sum, p) => sum + p.y, 0) / outline.points.length;
+          text.setAttribute('x', centerX);
+          text.setAttribute('y', centerY);
+          text.style.fill = outline.color || '#666';
+          text.style.fontSize = outline.type === 'road' ? '12px' : '13px';
+          text.style.fontWeight = 'bold';
+          text.style.textAnchor = 'middle';
+          text.style.pointerEvents = 'none';
+          text.style.opacity = '0.8';
+          text.style.textShadow = '1px 1px 2px rgba(255,255,255,0.8)';
+          text.textContent = outline.label;
+          svg.appendChild(text);
+        }
+      });
+    }
+    
+    // Add custom drawings on top
+    state.customDrawings.forEach((drawing, index) => {
+      const path = document.createElementNS(svgNS, 'path');
+      path.classList.add('custom-drawing');
+      const pathData = pointsToPath(drawing.points);
+      path.setAttribute('d', pathData);
+      path.setAttribute('data-drawing-id', drawing.id);
+      
+      // Use different colors for each drawing
+      const hue = (index * 60) % 360;
+      path.style.stroke = `hsl(${hue}, 70%, 50%)`;
+      path.style.fill = 'none';
+      path.style.strokeWidth = '3';
+      path.style.strokeDasharray = '8,4';
+      path.style.opacity = '0.8';
+      
+      svg.appendChild(path);
+      console.log('Added drawing path:', pathData);
+    });
   }
 
   /* ----------------------------------------------------------

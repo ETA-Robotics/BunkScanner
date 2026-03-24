@@ -472,6 +472,115 @@ button, select, input {
   border-color: var(--fill-target);
 }
 
+/* --- Drawing mode --- */
+.map-control__btn--drawing {
+  background: var(--alert-warning);
+  color: white;
+  border-color: var(--alert-warning);
+}
+
+.drawing-cursor {
+  cursor: crosshair !important;
+}
+
+.drawing-cursor * {
+  cursor: crosshair !important;
+}
+
+/* --- Custom drawings --- */
+.custom-drawing {
+  fill: none;
+  stroke: var(--alert-warning);
+  stroke-width: 3;
+  stroke-dasharray: 8,4;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.custom-drawing:hover {
+  opacity: 1;
+  stroke-width: 4;
+}
+
+/* --- Reference outlines --- */
+.reference-outline {
+  fill: none;
+  pointer-events: none;
+  transition: opacity var(--t-fast);
+}
+
+.reference-road {
+  fill: rgba(127, 140, 141, 0.2) !important;
+}
+
+.reference-facility {
+  fill: rgba(142, 68, 173, 0.1);
+}
+
+.reference-water {
+  fill: rgba(52, 152, 219, 0.1);
+}
+
+.reference-pen {
+  fill: rgba(255, 255, 255, 0.05);
+}
+
+.reference-label {
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font);
+  transition: opacity var(--t-fast);
+}
+
+.reference-label-road {
+  font-size: 11px !important;
+  opacity: 0.9 !important;
+}
+
+.reference-label-facility {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.reference-label-water {
+  font-size: 12px !important;
+  font-style: italic;
+}
+
+/* Show reference outlines prominently when background is hidden */
+.map-bg.map-bg--hidden ~ .map-svg .reference-outline,
+.map-bg.map-bg--hidden ~ .map-svg .reference-label {
+  opacity: 1 !important;
+}
+
+/* Subtle outlines when background is visible */
+.map-bg:not(.map-bg--hidden) ~ .map-svg .reference-outline {
+  opacity: 0.3;
+}
+
+.map-bg:not(.map-bg--hidden) ~ .map-svg .reference-label {
+  opacity: 0.4;
+}
+
+/* Always show roads prominently */
+.reference-road {
+  opacity: 0.6 !important;
+}
+
+.map-bg.map-bg--hidden ~ .map-svg .reference-road {
+  opacity: 0.8 !important;
+}
+
+/* --- Drawing preview --- */
+.drawing-preview {
+  fill: none;
+  stroke: var(--alert-warning);
+  stroke-width: 2;
+  stroke-dasharray: 4,2;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 /* --- Tooltip --- */
 .map-tooltip {
   position: fixed;
@@ -1273,4 +1382,62 @@ button, select, input {
   }
 
   .site-header { background: #fff; color: #000; border-bottom: 2px solid #000; }
+}
+
+
+/* ============================================================
+   Error Handler — Toast Notifications & Connection Indicator
+   ============================================================ */
+
+/* ── Toast ── */
+.bunk-toast {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(1rem);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-inverse);
+  background: var(--text);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 9999;
+  max-width: 90vw;
+  pointer-events: auto;
+}
+.bunk-toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.bunk-toast--error   { background: var(--alert-urgent); }
+.bunk-toast--warn    { background: var(--alert-warning); }
+.bunk-toast--success { background: var(--fill-target); }
+.bunk-toast--info    { background: var(--alert-info); }
+
+.bunk-toast__icon { font-size: 1.1rem; flex-shrink: 0; }
+.bunk-toast__message { flex: 1; }
+.bunk-toast__close {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 0.25rem;
+  opacity: 0.75;
+}
+.bunk-toast__close:hover { opacity: 1; }
+
+/* ── Timestamp staleness ── */
+.timestamp--warn  { color: var(--alert-warning); }
+.timestamp--stale { color: var(--alert-urgent); animation: pulse-stale 2s ease-in-out infinite; }
+
+@keyframes pulse-stale {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
 }
