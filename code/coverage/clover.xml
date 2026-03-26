@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1773896425972" clover="3.2.0">
-  <project timestamp="1773896425972" name="All files">
+<coverage generated="1774486814833" clover="3.2.0">
+  <project timestamp="1774486814833" name="All files">
     <metrics statements="188" coveredstatements="175" conditionals="107" coveredconditionals="102" methods="37" coveredmethods="36" elements="332" coveredelements="313" complexity="0" loc="188" ncloc="188" packages="2" files="2" classes="2"/>
-    <package name="BunkScanner">
+    <package name="code">
       <metrics statements="61" coveredstatements="48" conditionals="12" coveredconditionals="9" methods="6" coveredmethods="5"/>
-      <file name="server.js" path="/home/kota/BunkScanner/server.js">
+      <file name="server.js" path="/home/kota/BunkScanner/code/server.js">
         <metrics statements="61" coveredstatements="48" conditionals="12" coveredconditionals="9" methods="6" coveredmethods="5"/>
         <line num="14" count="1" type="stmt"/>
         <line num="15" count="1" type="stmt"/>
@@ -69,9 +69,9 @@
         <line num="197" count="1" type="stmt"/>
       </file>
     </package>
-    <package name="BunkScanner.lib">
+    <package name="code.lib">
       <metrics statements="127" coveredstatements="127" conditionals="95" coveredconditionals="93" methods="31" coveredmethods="31"/>
-      <file name="errorHandler.js" path="/home/kota/BunkScanner/lib/errorHandler.js">
+      <file name="errorHandler.js" path="/home/kota/BunkScanner/code/lib/errorHandler.js">
         <metrics statements="127" coveredstatements="127" conditionals="95" coveredconditionals="93" methods="31" coveredmethods="31"/>
         <line num="16" count="36" type="stmt"/>
         <line num="17" count="36" type="stmt"/>

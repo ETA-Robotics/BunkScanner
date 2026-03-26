@@ -31,7 +31,7 @@ RS485 Modbus RTU sensor network for feedlot bunk monitoring.
 ## Directory Structure
 
 ```
-firmware/
+code/firmware/
 ├── node/                         STM32 sensor node firmware
 │   ├── Inc/
 │   │   ├── pin_config.h          GPIO/peripheral pin assignments
@@ -65,7 +65,7 @@ firmware/
 ### Building
 
 ```bash
-cd firmware/node
+cd code/firmware/node
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j$(nproc)
@@ -191,7 +191,7 @@ npm start
 
 ## TODO
 
-- [ ] Integrate actual VL53L7CX ULD into `vl53l7cx_driver.c`
+- [ ] Integrate actual VL53L7CX ULD into `code/firmware/node/Src/vl53l7cx_driver.c`
 - [ ] Implement chunked full zone data transfer (FC 0x43)
 - [ ] Add OTA firmware update via RS485 (STM32G0 UART bootloader)
 - [ ] Add ADDR_CHAIN bypass timeout for dead-node skip

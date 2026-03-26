@@ -24,7 +24,7 @@
 |-------|--------|---------|
 | "748 nodes validated in 22ms" | **UNVERIFIED** | bus-diagnostic.js has stress mode but no recorded test output exists in repo |
 | "Complete backend ready" | **PARTIAL** | Express.js skeleton works; no database, no auth, no historical data storage |
-| "SVG dashboard operational" | **TRUE** | web/app.js renders 2990x1290 SVG; untested at 748-node scale |
+| "SVG dashboard operational" | **TRUE** | code/web/app.js renders 2990x1290 SVG; untested at 748-node scale |
 | "Auto-addressing via GPIO" | **CODE EXISTS** | Firmware written but untested on physical hardware |
 | "4-sensor redundancy" | **PARTIAL** | VL53L7CX driver ~60% complete; sensor fusion algorithm not implemented |
 | "PCB design ready" | **FALSE** | Still in specification phase; schematic not started |

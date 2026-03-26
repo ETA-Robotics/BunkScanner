@@ -4,7 +4,7 @@
  * Tests CRC-16/Modbus, frame construction, register map,
  * auto-addressing protocol, node ID format, bus timing.
  *
- * Run: npx jest test/modbus.test.js
+ * Run: npx jest code/test/modbus.test.js
  */
 
 /* ── CRC-16/Modbus (identical to firmware & gateway) ── */

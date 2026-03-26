@@ -13,7 +13,7 @@
  *   - Server connectivity issues
  *
  * Usage:
- *   node tools/error-monitor.js [--interval 10] [--once]
+ *   node code/tools/error-monitor.js [--interval 10] [--once]
  *
  * Options:
  *   --interval N   Poll interval in seconds (default: 10)

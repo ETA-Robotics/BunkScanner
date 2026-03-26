@@ -7,7 +7,7 @@
  * 3. Serves GET /api/site to the web dashboard
  * 4. Serves the static web frontend
  *
- * Run: node server.js
+ * Run: node code/server.js
  * Requires: npm install express
  */
 

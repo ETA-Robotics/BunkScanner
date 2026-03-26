@@ -58,7 +58,7 @@ The system monitors three main feedlot sections:
 ### Setup
 1. Deploy repository to web server
 2. Configure Arduino Opta network settings
-3. Update API endpoints in `web/app.js`
+3. Update API endpoints in `code/web/app.js`
 4. Access web interface via server URL
 
 ## Project Structure
@@ -67,13 +67,21 @@ The system monitors three main feedlot sections:
 BunkScanner/
 ├── README.md                           # This file
 ├── LICENSE                             # Private ETA License
-├── Bunk Volume Scanning Project/       # Project documentation
-└── web/                                # Web application
-    ├── index.html                      # Main dashboard interface
-    ├── app.js                          # Application logic and data processing
-    ├── style.css                       # User interface styling
-    ├── feedlot-layout.jpg              # Full feedlot overhead layout
-    └── feedlot-layout-crop.jpg         # Cropped layout for UI overlay
+├── code/                               # Application source code
+│   ├── server.js                       # Express server entrypoint
+│   ├── tests/                          # Main Jest test suite
+│   ├── test/                           # Legacy protocol and API tests
+│   ├── firmware/                       # STM32 node and Opta gateway firmware
+│   ├── coverage/                       # Jest coverage output
+│   ├── lib/                            # Shared backend modules
+│   ├── tools/                          # Diagnostic and monitoring CLIs
+│   └── web/                            # Web application
+│       ├── index.html                  # Main dashboard interface
+│       ├── app.js                      # Application logic and data processing
+│       ├── style.css                   # User interface styling
+│       ├── feedlot-layout.jpg          # Full feedlot overhead layout
+│       └── feedlot-layout-crop.jpg     # Cropped layout for UI overlay
+└── docs/                               # Planning and project documentation
 ```
 
 ## Usage

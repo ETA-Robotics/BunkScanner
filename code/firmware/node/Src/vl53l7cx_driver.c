@@ -7,7 +7,7 @@
  * - Split across I2C1 (CAM1+CAM2) and I2C2 (CAM3+CAM4)
  *
  * Note: This driver wraps the ST VL53L7CX ULD (Ultra Lite Driver).
- * The actual ULD source files must be placed in firmware/node/Drivers/.
+ * The actual ULD source files must be placed in code/firmware/node/Drivers/.
  */
 
 #include "vl53l7cx_driver.h"

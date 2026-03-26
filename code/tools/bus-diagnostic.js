@@ -7,7 +7,7 @@
  * validates data flow end-to-end.
  *
  * Usage:
- *   node tools/bus-diagnostic.js [command] [options]
+ *   node code/tools/bus-diagnostic.js [command] [options]
  *
  * Commands:
  *   simulate    — Push simulated bus data to server
@@ -484,7 +484,7 @@ if (!cmd || !commands[cmd]) {
     console.log(`
 ${C.bold}BunkScanner Bus Diagnostic Tool${C.reset}
 
-${C.cyan}Usage:${C.reset} node tools/bus-diagnostic.js <command> [args]
+${C.cyan}Usage:${C.reset} node code/tools/bus-diagnostic.js <command> [args]
 
 ${C.cyan}Server Commands:${C.reset}
   simulate [busId] [count]    Push simulated data to server

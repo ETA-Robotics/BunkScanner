@@ -2,7 +2,7 @@
  * BunkScanner — Server API Test Suite
  *
  * Tests backend endpoints, data validation, error handling.
- * Run: npx jest test/server.test.js
+ * Run: npx jest code/test/server.test.js
  */
 
 const request = require('supertest');
