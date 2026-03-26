@@ -2,26 +2,26 @@
   "name": "bunkscanner-server",
   "version": "1.0.0",
   "description": "BunkScanner backend — receives Opta gateway data, serves web dashboard",
-  "main": "code/server.js",
+  "main": "Code/server.js",
   "scripts": {
-    "start": "node code/server.js",
-    "dev": "node code/server.js",
+    "start": "node Code/server.js",
+    "dev": "node Code/server.js",
     "test": "jest --verbose",
-    "test:server": "jest code/tests/server.test.js --verbose",
-    "test:errors": "jest code/tests/errorHandler.test.js --verbose",
-    "test:frontend": "jest code/tests/frontend.test.js --verbose",
-    "test:firmware": "jest code/tests/firmware.test.js --verbose",
-    "test:legacy": "jest code/test/ --verbose",
+    "test:server": "jest Code/tests/server.test.js --verbose",
+    "test:errors": "jest Code/tests/errorHandler.test.js --verbose",
+    "test:frontend": "jest Code/tests/frontend.test.js --verbose",
+    "test:firmware": "jest Code/tests/firmware.test.js --verbose",
+    "test:legacy": "jest Code/test/ --verbose",
     "test:all": "jest --verbose --coverage",
-    "test:modbus": "jest code/test/modbus.test.js --verbose",
-    "diagnostic": "node code/tools/bus-diagnostic.js",
-    "diagnostic:health": "node code/tools/bus-diagnostic.js health",
-    "diagnostic:stress": "node code/tools/bus-diagnostic.js stress",
-    "diagnostic:timeline": "node code/tools/bus-diagnostic.js timeline",
-    "diagnostic:power": "node code/tools/bus-diagnostic.js power",
-    "monitor": "node code/tools/error-monitor.js",
-    "monitor:once": "node code/tools/error-monitor.js --once",
-    "monitor:ci": "node code/tools/error-monitor.js --once --strict --json"
+    "test:modbus": "jest Code/test/modbus.test.js --verbose",
+    "diagnostic": "node Code/tools/bus-diagnostic.js",
+    "diagnostic:health": "node Code/tools/bus-diagnostic.js health",
+    "diagnostic:stress": "node Code/tools/bus-diagnostic.js stress",
+    "diagnostic:timeline": "node Code/tools/bus-diagnostic.js timeline",
+    "diagnostic:power": "node Code/tools/bus-diagnostic.js power",
+    "monitor": "node Code/tools/error-monitor.js",
+    "monitor:once": "node Code/tools/error-monitor.js --once",
+    "monitor:ci": "node Code/tools/error-monitor.js --once --strict --json"
   },
   "dependencies": {
     "express": "^4.21.0"
@@ -33,6 +33,6 @@
     "supertest": "^7.2.2"
   },
   "jest": {
-    "coverageDirectory": "code/coverage"
+    "coverageDirectory": "Code/coverage"
   }
 }

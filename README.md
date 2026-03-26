@@ -58,7 +58,7 @@ The system monitors three main feedlot sections:
 ### Setup
 1. Deploy repository to web server
 2. Configure Arduino Opta network settings
-3. Update API endpoints in `code/web/app.js`
+3. Update API endpoints in `Code/web/app.js`
 4. Access web interface via server URL
 
 ## Project Structure
@@ -67,7 +67,7 @@ The system monitors three main feedlot sections:
 BunkScanner/
 ├── README.md                           # This file
 ├── LICENSE                             # Private ETA License
-├── code/                               # Application source code
+├── Code/                               # Application source code
 │   ├── server.js                       # Express server entrypoint
 │   ├── tests/                          # Main Jest test suite
 │   ├── test/                           # Legacy protocol and API tests
